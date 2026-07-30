@@ -33,7 +33,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       message:
         typeof message === 'string'
           ? message
-          : (message as any).message || message,
+          : (message as Record<string, unknown>).message || message,
       path: request.url,
     };
 

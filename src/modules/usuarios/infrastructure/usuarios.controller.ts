@@ -10,9 +10,12 @@ import {
   ForbiddenException,
   Query,
 } from '@nestjs/common';
+import { Request as ExpressRequest } from 'express';
 import { UsuariosService } from '../application/usuarios.service';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { JwtAuthGuard } from '../../auth/infrastructure/guards/jwt-auth.guard';
+
+type RequestWithUser = ExpressRequest & { user: { id: string; email: string } };
 
 @Controller('usuarios')
 @UseGuards(JwtAuthGuard)
@@ -33,7 +36,7 @@ export class UsuariosController {
   update(
     @Param('id') id: string,
     @Body() updateUsuarioDto: UpdateUsuarioDto,
-    @Request() req: any,
+    @Request() req: RequestWithUser,
   ) {
     if (req.user.id !== id) {
       throw new ForbiddenException(
@@ -44,7 +47,7 @@ export class UsuariosController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string, @Request() req: any) {
+  remove(@Param('id') id: string, @Request() req: RequestWithUser) {
     if (req.user.id !== id) {
       throw new ForbiddenException(
         'No tienes permisos para eliminar este usuario',

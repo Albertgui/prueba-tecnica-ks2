@@ -48,9 +48,10 @@ export class InmueblesRepository {
     if (filters.tipoInmuebleId) where.tipoInmuebleId = filters.tipoInmuebleId;
 
     if (filters.precioMin || filters.precioMax) {
-      where.precio = {};
-      if (filters.precioMin) (where.precio as any).gte = filters.precioMin;
-      if (filters.precioMax) (where.precio as any).lte = filters.precioMax;
+      const precioFilter: Prisma.DecimalFilter = {};
+      if (filters.precioMin) precioFilter.gte = filters.precioMin;
+      if (filters.precioMax) precioFilter.lte = filters.precioMax;
+      where.precio = precioFilter;
     }
 
     const page = filters.page || 1;
@@ -89,7 +90,7 @@ export class InmueblesRepository {
     });
   }
 
-  private mapToEntity(record: any): InmuebleEntity {
+  private mapToEntity(record: Prisma.InmuebleGetPayload<Record<string, never>>): InmuebleEntity {
     return new InmuebleEntity(
       record.id,
       record.direccion,

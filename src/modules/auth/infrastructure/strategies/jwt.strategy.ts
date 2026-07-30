@@ -13,7 +13,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: any) {
+  async validate(payload: { sub: string; email: string }) {
     const user = await this.usuariosRepository.findById(payload.sub);
     if (!user || !user.activo) {
       throw new UnauthorizedException('Token inválido o usuario inactivo');
