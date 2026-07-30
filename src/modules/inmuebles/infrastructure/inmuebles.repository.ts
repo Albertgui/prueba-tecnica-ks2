@@ -9,7 +9,10 @@ import { EstadoInmueble, Prisma } from '@prisma/client';
 export class InmueblesRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(vendedorId: string, data: CreateInmuebleDto): Promise<InmuebleEntity> {
+  async create(
+    vendedorId: string,
+    data: CreateInmuebleDto,
+  ): Promise<InmuebleEntity> {
     const record = await this.prisma.inmueble.create({
       data: {
         direccion: data.direccion,
@@ -18,7 +21,7 @@ export class InmueblesRepository {
         metrosCuadrados: data.metrosCuadrados,
         vendedorId,
         tipoInmuebleId: data.tipoInmuebleId,
-      }
+      },
     });
     return this.mapToEntity(record);
   }
@@ -61,7 +64,7 @@ export class InmueblesRepository {
         take: limit,
         include: {
           tipoInmueble: true,
-          vendedor: { select: { id: true, nombre: true, email: true } }
+          vendedor: { select: { id: true, nombre: true, email: true } },
         },
         orderBy: { createdAt: 'desc' },
       }),
@@ -69,13 +72,13 @@ export class InmueblesRepository {
     ]);
 
     return {
-      data: data.map(d => ({ ...d, precio: Number(d.precio) })),
+      data: data.map((d) => ({ ...d, precio: Number(d.precio) })),
       meta: {
         total,
         page,
         limit,
         totalPages: Math.ceil(total / limit),
-      }
+      },
     };
   }
 
@@ -97,7 +100,7 @@ export class InmueblesRepository {
       record.vendedorId,
       record.tipoInmuebleId,
       record.createdAt,
-      record.updatedAt
+      record.updatedAt,
     );
   }
 }

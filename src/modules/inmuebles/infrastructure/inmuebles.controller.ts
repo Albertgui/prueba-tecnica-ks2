@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Body, Param, Delete, Query, UseGuards, Request, Patch } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  Query,
+  UseGuards,
+  Request,
+  Patch,
+} from '@nestjs/common';
 import { InmueblesService } from '../application/inmuebles.service';
 import { CreateInmuebleDto } from './dto/create-inmueble.dto';
 import { FilterInmuebleDto } from './dto/filter-inmueble.dto';
@@ -8,12 +19,12 @@ import { JwtAuthGuard } from '../../auth/infrastructure/guards/jwt-auth.guard';
 export class InmueblesController {
   constructor(private readonly inmueblesService: InmueblesService) {}
 
-  @Get() // Catálogo público
+  @Get()
   findAll(@Query() filters: FilterInmuebleDto) {
     return this.inmueblesService.findAll(filters);
   }
 
-  @Get(':id') // Público
+  @Get(':id')
   findOne(@Param('id') id: string) {
     return this.inmueblesService.findOne(id);
   }

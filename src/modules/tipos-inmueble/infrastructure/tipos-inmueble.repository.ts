@@ -8,12 +8,21 @@ export class TiposInmuebleRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll(): Promise<TipoInmuebleEntity[]> {
-    const tipos = await this.prisma.tipoInmueble.findMany({ where: { activo: true } });
-    return tipos.map(t => new TipoInmuebleEntity(t.id, t.codigo, t.nombre, t.activo));
+    const tipos = await this.prisma.tipoInmueble.findMany({
+      where: { activo: true },
+    });
+    return tipos.map(
+      (t) => new TipoInmuebleEntity(t.id, t.codigo, t.nombre, t.activo),
+    );
   }
 
   async create(data: CreateTipoInmuebleDto): Promise<TipoInmuebleEntity> {
     const tipo = await this.prisma.tipoInmueble.create({ data });
-    return new TipoInmuebleEntity(tipo.id, tipo.codigo, tipo.nombre, tipo.activo);
+    return new TipoInmuebleEntity(
+      tipo.id,
+      tipo.codigo,
+      tipo.nombre,
+      tipo.activo,
+    );
   }
 }

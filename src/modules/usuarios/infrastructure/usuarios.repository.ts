@@ -12,7 +12,16 @@ export class UsuariosRepository {
       where: { id, deletedAt: null },
     });
     if (!user) return null;
-    return new UsuarioEntity(user.id, user.nombre, user.email, user.password, user.activo, user.createdAt, user.updatedAt, user.deletedAt);
+    return new UsuarioEntity(
+      user.id,
+      user.nombre,
+      user.email,
+      user.password,
+      user.activo,
+      user.createdAt,
+      user.updatedAt,
+      user.deletedAt,
+    );
   }
 
   async findByEmail(email: string): Promise<UsuarioEntity | null> {
@@ -20,18 +29,34 @@ export class UsuariosRepository {
       where: { email, deletedAt: null },
     });
     if (!user) return null;
-    return new UsuarioEntity(user.id, user.nombre, user.email, user.password, user.activo, user.createdAt, user.updatedAt, user.deletedAt);
+    return new UsuarioEntity(
+      user.id,
+      user.nombre,
+      user.email,
+      user.password,
+      user.activo,
+      user.createdAt,
+      user.updatedAt,
+      user.deletedAt,
+    );
   }
 
   async findAllPaginated(page: number, limit: number) {
     const skip = (page - 1) * limit;
-    
+
     const [data, total] = await Promise.all([
       this.prisma.usuario.findMany({
         where: { deletedAt: null },
         skip,
         take: limit,
-        select: { id: true, nombre: true, email: true, activo: true, createdAt: true, updatedAt: true },
+        select: {
+          id: true,
+          nombre: true,
+          email: true,
+          activo: true,
+          createdAt: true,
+          updatedAt: true,
+        },
       }),
       this.prisma.usuario.count({ where: { deletedAt: null } }),
     ]);

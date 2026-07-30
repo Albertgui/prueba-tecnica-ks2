@@ -16,10 +16,12 @@ import { InmueblesModule } from './modules/inmuebles/infrastructure/inmuebles.mo
     AuthModule,
     TiposInmuebleModule,
     InmueblesModule,
-    ThrottlerModule.forRoot([{
-      ttl: 60000, // 1 minuto
-      limit: 100, // 100 peticiones por minuto por IP global (podemos ajustarlo luego)
-    }]),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000,
+        limit: 100,
+      },
+    ]),
   ],
   controllers: [AppController],
   providers: [

@@ -19,28 +19,34 @@ export class InmuebleEntity {
     return this._estado;
   }
 
-  // --- MÁQUINA DE ESTADOS ---
-
   reservar(): void {
     if (this._estado !== EstadoInmueble.DISPONIBLE) {
-      throw new BadRequestException(`Solo se pueden reservar inmuebles disponibles. Estado actual: ${this._estado}`);
+      throw new BadRequestException(
+        `Solo se pueden reservar inmuebles disponibles. Estado actual: ${this._estado}`,
+      );
     }
     this._estado = EstadoInmueble.RESERVADO;
   }
 
   vender(): void {
     if (this._estado === EstadoInmueble.VENDIDO) {
-      throw new BadRequestException('El inmueble ya ha sido vendido previamente.');
+      throw new BadRequestException(
+        'El inmueble ya ha sido vendido previamente.',
+      );
     }
     if (this._estado !== EstadoInmueble.DISPONIBLE) {
-      throw new BadRequestException(`Solo se pueden vender inmuebles disponibles. (Si estaba reservado, debe liberarse primero o implementar esa transición si el negocio lo requiere. Según reglas estrictas: DISPONIBLE -> VENDIDO)`);
+      throw new BadRequestException(
+        `Solo se pueden vender inmuebles disponibles.`,
+      );
     }
     this._estado = EstadoInmueble.VENDIDO;
   }
 
   liberar(): void {
     if (this._estado !== EstadoInmueble.RESERVADO) {
-      throw new BadRequestException(`Solo se pueden liberar inmuebles reservados. Estado actual: ${this._estado}`);
+      throw new BadRequestException(
+        `Solo se pueden liberar inmuebles reservados. Estado actual: ${this._estado}`,
+      );
     }
     this._estado = EstadoInmueble.DISPONIBLE;
   }

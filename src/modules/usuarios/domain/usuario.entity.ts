@@ -3,7 +3,7 @@ export class UsuarioEntity {
     public readonly id: string,
     public readonly nombre: string,
     public readonly email: string,
-    public readonly password?: string, // Opcional porque no siempre lo sacaremos a la luz
+    public readonly password?: string,
     public readonly activo?: boolean,
     public readonly createdAt?: Date,
     public readonly updatedAt?: Date,

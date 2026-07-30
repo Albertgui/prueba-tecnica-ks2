@@ -7,7 +7,10 @@ export class UsuariosService {
   constructor(private readonly usuariosRepository: UsuariosRepository) {}
 
   async findAll(page: number = 1, limit: number = 10) {
-    return this.usuariosRepository.findAllPaginated(Number(page), Number(limit));
+    return this.usuariosRepository.findAllPaginated(
+      Number(page),
+      Number(limit),
+    );
   }
 
   async findOne(id: string) {
@@ -15,16 +18,14 @@ export class UsuariosService {
     if (!user) {
       throw new NotFoundException(`Usuario no encontrado`);
     }
-    // Removemos explícitamente el password
     const { password, ...userWithoutPassword } = user;
     return userWithoutPassword;
   }
 
   async update(id: string, updateUsuarioDto: UpdateUsuarioDto) {
-    // IDOR Protection and existence check done in controller/service
     const user = await this.usuariosRepository.findById(id);
     if (!user) {
-      throw new NotFoundException(`Usuario no encontrado`); // Return 404 to not leak existence
+      throw new NotFoundException(`Usuario no encontrado`);
     }
 
     await this.usuariosRepository.update(id, updateUsuarioDto);

@@ -1,20 +1,11 @@
-import { IsString, IsEmail, MinLength, IsOptional, IsBoolean } from 'class-validator';
+import { IsString, IsOptional, IsBoolean } from 'class-validator';
 
 export class UpdateUsuarioDto {
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'El nombre debe ser texto' })
   nombre?: string;
 
   @IsOptional()
-  @IsEmail()
-  email?: string;
-
-  @IsOptional()
-  @IsString()
-  @MinLength(6)
-  password?: string;
-
-  @IsOptional()
-  @IsBoolean()
+  @IsBoolean({ message: 'Activo debe ser booleano' })
   activo?: boolean;
 }
