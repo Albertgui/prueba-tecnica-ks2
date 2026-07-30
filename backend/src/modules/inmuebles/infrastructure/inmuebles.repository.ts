@@ -90,7 +90,9 @@ export class InmueblesRepository {
     });
   }
 
-  private mapToEntity(record: Prisma.InmuebleGetPayload<Record<string, never>>): InmuebleEntity {
+  private mapToEntity(
+    record: Prisma.InmuebleGetPayload<Record<string, never>>,
+  ): InmuebleEntity {
     return new InmuebleEntity(
       record.id,
       record.direccion,

@@ -1,7 +1,6 @@
 import {
   Injectable,
   NotFoundException,
-  ForbiddenException,
 } from '@nestjs/common';
 import { InmueblesRepository } from '../infrastructure/inmuebles.repository';
 import { CreateInmuebleDto } from '../infrastructure/dto/create-inmueble.dto';
@@ -9,7 +8,7 @@ import { FilterInmuebleDto } from '../infrastructure/dto/filter-inmueble.dto';
 
 @Injectable()
 export class InmueblesService {
-  constructor(private readonly repository: InmueblesRepository) {}
+  constructor(private readonly repository: InmueblesRepository) { }
 
   async create(vendedorId: string, dto: CreateInmuebleDto) {
     return this.repository.create(vendedorId, dto);
@@ -35,9 +34,7 @@ export class InmueblesService {
   async vender(id: string, vendedorId: string) {
     const inmueble = await this.findOne(id);
     if (inmueble.vendedorId !== vendedorId) {
-      throw new ForbiddenException(
-        'Solo el vendedor propietario puede marcar como vendido',
-      );
+      throw new NotFoundException('Inmueble no encontrado');
     }
     inmueble.vender();
     await this.repository.updateState(id, inmueble.estado);
@@ -47,9 +44,7 @@ export class InmueblesService {
   async liberar(id: string, vendedorId: string) {
     const inmueble = await this.findOne(id);
     if (inmueble.vendedorId !== vendedorId) {
-      throw new ForbiddenException(
-        'Solo el vendedor propietario puede liberar la reserva',
-      );
+      throw new NotFoundException('Inmueble no encontrado');
     }
     inmueble.liberar();
     await this.repository.updateState(id, inmueble.estado);
@@ -59,9 +54,7 @@ export class InmueblesService {
   async remove(id: string, vendedorId: string) {
     const inmueble = await this.findOne(id);
     if (inmueble.vendedorId !== vendedorId) {
-      throw new ForbiddenException(
-        'No tienes permisos para eliminar este inmueble',
-      );
+      throw new NotFoundException('Inmueble no encontrado');
     }
     await this.repository.softDelete(id);
     return { success: true, message: 'Inmueble eliminado' };

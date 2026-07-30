@@ -1,4 +1,4 @@
-import { BadRequestException } from '@nestjs/common';
+import { ConflictException } from '@nestjs/common';
 import { EstadoInmueble } from '@prisma/client';
 
 export class InmuebleEntity {
@@ -21,7 +21,7 @@ export class InmuebleEntity {
 
   reservar(): void {
     if (this._estado !== EstadoInmueble.DISPONIBLE) {
-      throw new BadRequestException(
+      throw new ConflictException(
         `Solo se pueden reservar inmuebles disponibles. Estado actual: ${this._estado}`,
       );
     }
@@ -30,12 +30,12 @@ export class InmuebleEntity {
 
   vender(): void {
     if (this._estado === EstadoInmueble.VENDIDO) {
-      throw new BadRequestException(
+      throw new ConflictException(
         'El inmueble ya ha sido vendido previamente.',
       );
     }
     if (this._estado !== EstadoInmueble.DISPONIBLE) {
-      throw new BadRequestException(
+      throw new ConflictException(
         `Solo se pueden vender inmuebles disponibles.`,
       );
     }
@@ -44,7 +44,7 @@ export class InmuebleEntity {
 
   liberar(): void {
     if (this._estado !== EstadoInmueble.RESERVADO) {
-      throw new BadRequestException(
+      throw new ConflictException(
         `Solo se pueden liberar inmuebles reservados. Estado actual: ${this._estado}`,
       );
     }

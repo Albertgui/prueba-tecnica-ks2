@@ -7,7 +7,7 @@ import {
   Put,
   UseGuards,
   Request,
-  ForbiddenException,
+  NotFoundException,
   Query,
 } from '@nestjs/common';
 import { Request as ExpressRequest } from 'express';
@@ -39,9 +39,7 @@ export class UsuariosController {
     @Request() req: RequestWithUser,
   ) {
     if (req.user.id !== id) {
-      throw new ForbiddenException(
-        'No tienes permisos para modificar este usuario',
-      );
+      throw new NotFoundException('Usuario no encontrado');
     }
     return this.usuariosService.update(id, updateUsuarioDto);
   }
@@ -49,9 +47,7 @@ export class UsuariosController {
   @Delete(':id')
   remove(@Param('id') id: string, @Request() req: RequestWithUser) {
     if (req.user.id !== id) {
-      throw new ForbiddenException(
-        'No tienes permisos para eliminar este usuario',
-      );
+      throw new NotFoundException('Usuario no encontrado');
     }
     return this.usuariosService.remove(id);
   }
