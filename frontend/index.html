@@ -5,11 +5,19 @@
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Encuentra el inmueble de tus sueños. Catálogo de propiedades en venta y alquiler con detalles completos." />
   <title>Prueba Técnica KS2</title>
 </head>
 
 <body>
-  <div id="root"></div>
+  <div id="root">
+    <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; font-family: system-ui, sans-serif; background: #fafaf9;">
+      <p style="color: #0f766e; font-weight: 500; font-size: 1.125rem; animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;">Cargando Real Estate Pro...</p>
+      <style>
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
+      </style>
+    </div>
+  </div>
   <script type="module" src="/src/main.tsx"></script>
 </body>
 

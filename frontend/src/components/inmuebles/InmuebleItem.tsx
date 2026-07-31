@@ -1,3 +1,4 @@
+import React from 'react';
 import type { Inmueble } from '@/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -9,20 +10,20 @@ interface Props {
   inmueble: Inmueble;
 }
 
-export function InmuebleItem({ inmueble }: Props) {
+export const InmuebleItem = React.memo(function InmuebleItem({ inmueble }: Props) {
   const { user } = useAuth();
   const isOwner = user?.id === inmueble.vendedorId;
 
   const getEstadoColor = (estado: string) => {
     switch (estado) {
       case 'DISPONIBLE':
-        return 'bg-green-500/10 text-green-500 hover:bg-green-500/20';
+        return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400';
       case 'RESERVADO':
-        return 'bg-yellow-500/10 text-yellow-500 hover:bg-yellow-500/20';
+        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400';
       case 'VENDIDO':
-        return 'bg-slate-500/10 text-slate-500 hover:bg-slate-500/20';
+        return 'bg-slate-200 text-slate-800 dark:bg-slate-800 dark:text-slate-300';
       default:
-        return 'bg-primary/10 text-primary';
+        return 'bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary-foreground';
     }
   };
 
@@ -87,4 +88,4 @@ export function InmuebleItem({ inmueble }: Props) {
       </div>
     </Card>
   );
-}
+});

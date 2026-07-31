@@ -10,7 +10,7 @@ export default defineConfig({
     },
   },
   build: {
-    target: 'esnext', // Using esnext as Vite default, or baseline-widely-available
+    target: 'baseline-widely-available',
     chunkSizeWarningLimit: 500,
     rollupOptions: {
       output: {

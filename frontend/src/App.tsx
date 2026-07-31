@@ -1,16 +1,16 @@
-import { Suspense, lazy } from 'react';
+import { Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from '@/context/AuthContext';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { Toaster } from '@/components/ui/sonner';
 
-const AddInmueble = lazy(() => import('@/pages/AddInmueble'));
-const EditInmueble = lazy(() => import('@/pages/EditInmueble'));
-const InmuebleDetalle = lazy(() => import('@/pages/InmuebleDetalle'));
-const LoginPage = lazy(() => import('@/pages/Login'));
-const AddUser = lazy(() => import('@/pages/AddUser'));
-const InmuebleList = lazy(() => import('@/pages/InmuebleList'));
-const UserList = lazy(() => import('@/pages/UserList'));
+import AddInmueble from '@/pages/AddInmueble';
+import EditInmueble from '@/pages/EditInmueble';
+import InmuebleDetalle from '@/pages/InmuebleDetalle';
+import LoginPage from '@/pages/Login';
+import AddUser from '@/pages/AddUser';
+import InmuebleList from '@/pages/InmuebleList';
+import UserList from '@/pages/UserList';
 
 function App() {
   return (
