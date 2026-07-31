@@ -45,7 +45,6 @@ export default function EditInmueble() {
 
   useEffect(() => {
     if (inmueble) {
-      // Security check (IDOR fallback for UI, backend enforces it anyway)
       if (inmueble.vendedorId !== currentUser?.id) {
         navigate('/inmuebles');
         return;
@@ -70,8 +69,8 @@ export default function EditInmueble() {
       setError(null);
       await api.patch(`/inmuebles/${id}`, data);
       navigate(`/inmuebles/${id}`);
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Error al actualizar el inmueble');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Error al actualizar el inmueble');
     }
   };
 

@@ -38,9 +38,13 @@ export default function InmuebleDetalle() {
     try {
       setIsChangingState(true);
       await api.patch(`/inmuebles/${id}/estado`, { estado: nuevoEstado });
-      mutate(); // Reload data
-    } catch (error: any) {
-      alert(error.response?.data?.message || 'Error al cambiar estado');
+      mutate();
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        alert(error.message || 'Error al cambiar estado');
+      } else {
+        alert('Error al cambiar estado');
+      }
     } finally {
       setIsChangingState(false);
     }
@@ -52,8 +56,12 @@ export default function InmuebleDetalle() {
       setIsDeleting(true);
       await api.delete(`/inmuebles/${id}`);
       navigate('/inmuebles');
-    } catch (error: any) {
-      alert(error.response?.data?.message || 'Error al eliminar');
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        alert(error.message || 'Error al eliminar');
+      } else {
+        alert('Error al eliminar');
+      }
       setIsDeleting(false);
     }
   };
@@ -94,7 +102,7 @@ export default function InmuebleDetalle() {
 
       <main className="container mx-auto px-4 max-w-5xl">
         <div className="bg-card rounded-xl border shadow-sm overflow-hidden">
-          {/* Header Image Placeholder */}
+
           <div className="h-64 sm:h-96 bg-muted relative flex items-center justify-center border-b">
             <span className="text-8xl opacity-10">🏠</span>
             <div className="absolute top-6 right-6">
@@ -142,7 +150,7 @@ export default function InmuebleDetalle() {
                   </div>
                 </div>
 
-                {/* Seller Info */}
+
                 <div className="border-t pt-8">
                   <h3 className="text-lg font-semibold mb-4">Información del Agente</h3>
                   <div className="flex items-center p-4 border rounded-lg bg-card">
@@ -157,7 +165,7 @@ export default function InmuebleDetalle() {
                 </div>
               </div>
 
-              {/* Action Panel (Only for owner) */}
+
               {isOwner && (
                 <div className="w-full md:w-80 space-y-6">
                   <div className="p-6 bg-muted/30 rounded-xl border">

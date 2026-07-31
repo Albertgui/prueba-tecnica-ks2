@@ -21,19 +21,36 @@ export class InmuebleEntity {
 
   cambiarEstado(nuevoEstado: EstadoInmueble): void {
     if (this._estado === EstadoInmueble.VENDIDO) {
-      throw new ConflictException('Un inmueble vendido no puede cambiar de estado.');
+      throw new ConflictException(
+        'Un inmueble vendido no puede cambiar de estado.',
+      );
     }
 
-    if (nuevoEstado === EstadoInmueble.RESERVADO && this._estado !== EstadoInmueble.DISPONIBLE) {
-      throw new ConflictException('Solo se pueden reservar inmuebles disponibles.');
+    if (
+      nuevoEstado === EstadoInmueble.RESERVADO &&
+      this._estado !== EstadoInmueble.DISPONIBLE
+    ) {
+      throw new ConflictException(
+        'Solo se pueden reservar inmuebles disponibles.',
+      );
     }
 
-    if (nuevoEstado === EstadoInmueble.VENDIDO && this._estado !== EstadoInmueble.DISPONIBLE) {
-      throw new ConflictException('Solo se pueden vender inmuebles disponibles.');
+    if (
+      nuevoEstado === EstadoInmueble.VENDIDO &&
+      this._estado !== EstadoInmueble.DISPONIBLE
+    ) {
+      throw new ConflictException(
+        'Solo se pueden vender inmuebles disponibles.',
+      );
     }
 
-    if (nuevoEstado === EstadoInmueble.DISPONIBLE && this._estado !== EstadoInmueble.RESERVADO) {
-      throw new ConflictException('Solo se pueden liberar (hacer disponibles) inmuebles reservados.');
+    if (
+      nuevoEstado === EstadoInmueble.DISPONIBLE &&
+      this._estado !== EstadoInmueble.RESERVADO
+    ) {
+      throw new ConflictException(
+        'Solo se pueden liberar (hacer disponibles) inmuebles reservados.',
+      );
     }
 
     this._estado = nuevoEstado;

@@ -8,7 +8,7 @@ interface Props {
 }
 
 export function UserItem({ user }: Props) {
-  // Generate initials for avatar fallback
+
   const initials = user.nombre
     .split(' ')
     .map((n: string) => n[0])
@@ -16,7 +16,7 @@ export function UserItem({ user }: Props) {
     .toUpperCase()
     .substring(0, 2);
 
-  // Format date
+
   const joinedDate = new Date(user.createdAt).toLocaleDateString('es-ES', {
     month: 'long',
     year: 'numeric',

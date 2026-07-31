@@ -69,7 +69,8 @@ export class InmueblesRepository {
 
     const orderBy: Prisma.InmuebleOrderByWithRelationInput = {};
     if (filters.orderBy) {
-      orderBy[filters.orderBy] = filters.order?.toLowerCase() === 'asc' ? 'asc' : 'desc';
+      orderBy[filters.orderBy] =
+        filters.order?.toLowerCase() === 'asc' ? 'asc' : 'desc';
     } else {
       orderBy.createdAt = 'desc';
     }

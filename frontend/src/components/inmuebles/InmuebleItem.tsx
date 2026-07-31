@@ -27,25 +27,30 @@ export function InmuebleItem({ inmueble }: Props) {
   };
 
   return (
-    <Card className="overflow-hidden group hover:shadow-lg transition-all duration-300">
-      <div className="h-48 bg-muted relative overflow-hidden">
-        {/* Placeholder for an image */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-primary/20 flex items-center justify-center">
-          <span className="text-4xl opacity-20">🏢</span>
+    <Card className="overflow-hidden group card-hover-effect bg-card border-border">
+      <div className="h-56 bg-muted relative overflow-hidden">
+
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-primary/30 flex items-center justify-center transition-transform duration-500 group-hover:scale-110">
+          <span className="text-5xl opacity-30 drop-shadow-md">🏢</span>
         </div>
-        <div className="absolute top-4 right-4">
-          <Badge variant="secondary" className={`font-semibold ${getEstadoColor(inmueble.estado)}`}>
+
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+        <div className="absolute top-4 right-4 z-10 flex flex-col items-end gap-2">
+          <Badge variant="secondary" className={`font-semibold glass shadow-sm ${getEstadoColor(inmueble.estado)}`}>
             {inmueble.estado}
           </Badge>
         </div>
+
+        {isOwner && (
+          <div className="absolute top-4 left-4 z-10">
+            <Badge className="bg-foreground text-background hover:bg-foreground border-transparent font-semibold shadow-md flex items-center px-3 py-1.5">
+              <User className="w-3.5 h-3.5 mr-1.5" /> Tu publicación
+            </Badge>
+          </div>
+        )}
       </div>
       
-      {isOwner && (
-        <div className="bg-primary text-primary-foreground text-xs py-1 px-3 text-center font-medium flex items-center justify-center">
-          <User className="w-3 h-3 mr-1" /> Tu publicación
-        </div>
-      )}
-
       <CardHeader className="pb-2">
         <div className="flex justify-between items-start gap-4">
           <CardTitle className="line-clamp-1 text-xl font-bold">
@@ -70,12 +75,14 @@ export function InmuebleItem({ inmueble }: Props) {
           </div>
         </div>
       </CardContent>
-      <div className="p-4 pt-0 border-t mt-4 flex items-center justify-between">
+      <div className="p-4 pt-0 mt-4 flex items-center justify-between">
         <Link 
           to={`/inmuebles/${inmueble.id}`}
-          className="text-primary hover:underline text-sm font-medium w-full text-center"
+          className="w-full"
         >
-          Ver Detalles
+          <button className="w-full bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground py-2 px-4 rounded-md text-sm font-semibold transition-colors duration-300">
+            Ver Detalles
+          </button>
         </Link>
       </div>
     </Card>

@@ -26,10 +26,14 @@ export class InmueblesController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  findAll(@Query() filters: FilterInmuebleDto, @Request() req: RequestWithUser) {
+  findAll(
+    @Query() filters: FilterInmuebleDto,
+    @Request() req: RequestWithUser,
+  ) {
     return this.inmueblesService.findAll(filters, req.user.id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.inmueblesService.findOne(id);

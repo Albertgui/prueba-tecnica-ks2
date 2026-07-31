@@ -40,8 +40,8 @@ export default function AddInmueble() {
       setError(null);
       await api.post('/inmuebles', data);
       navigate('/inmuebles');
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Error al crear el inmueble');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Error al crear el inmueble');
     }
   };
 

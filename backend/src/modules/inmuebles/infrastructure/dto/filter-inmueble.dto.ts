@@ -44,12 +44,16 @@ export class FilterInmuebleDto {
 
   @IsOptional()
   @IsString({ message: 'El orderBy debe ser texto' })
-  @IsEnum(['precio', 'createdAt'], { message: 'orderBy solo puede ser precio o createdAt' })
+  @IsEnum(['precio', 'createdAt'], {
+    message: 'orderBy solo puede ser precio o createdAt',
+  })
   orderBy?: 'precio' | 'createdAt';
 
   @IsOptional()
   @IsString({ message: 'El order debe ser texto' })
-  @IsEnum(['asc', 'desc', 'ASC', 'DESC'], { message: 'order solo puede ser ASC o DESC' })
+  @IsEnum(['asc', 'desc', 'ASC', 'DESC'], {
+    message: 'order solo puede ser ASC o DESC',
+  })
   order?: 'asc' | 'desc' | 'ASC' | 'DESC';
 
   @IsOptional()

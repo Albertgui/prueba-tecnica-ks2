@@ -9,67 +9,67 @@
  
 @layer base {
   :root {
-    /* Premium Slate + Cobalt Theme */
-    --background: 210 20% 98%; /* Very light grey-blue */
-    --foreground: 222.2 47.4% 11.2%; /* Deep slate text */
+    /* Midnight Emerald & Sand - Luxury Real Estate */
+    --background: 40 20% 98%; /* Warm Sand */
+    --foreground: 160 30% 12%; /* Deep Forest/Charcoal */
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 47.4% 11.2%;
+    --card-foreground: 160 30% 12%;
  
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 47.4% 11.2%;
+    --popover-foreground: 160 30% 12%;
  
-    /* Cobalt Accent */
-    --primary: 221.2 83.2% 53.3%; 
-    --primary-foreground: 210 40% 98%;
+    /* Emerald Accent */
+    --primary: 160 50% 28%; 
+    --primary-foreground: 40 20% 98%;
  
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 40 15% 90%;
+    --secondary-foreground: 160 30% 15%;
  
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 40 10% 93%;
+    --muted-foreground: 160 10% 45%;
  
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 160 20% 94%;
+    --accent-foreground: 160 50% 28%;
  
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 40 20% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
+    --border: 40 15% 88%;
+    --input: 40 15% 88%;
+    --ring: 160 50% 28%;
  
-    --radius: 0.5rem;
+    --radius: 0.75rem; /* Slightly softer corners for luxury feel */
   }
  
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 160 25% 6%;
+    --foreground: 40 20% 96%;
  
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 160 20% 10%;
+    --card-foreground: 40 20% 96%;
  
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 160 20% 10%;
+    --popover-foreground: 40 20% 96%;
  
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 160 40% 45%;
+    --primary-foreground: 160 30% 10%;
  
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 160 15% 15%;
+    --secondary-foreground: 40 20% 96%;
  
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 160 15% 15%;
+    --muted-foreground: 160 10% 60%;
  
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 160 20% 15%;
+    --accent-foreground: 40 20% 96%;
  
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 60% 40%;
+    --destructive-foreground: 40 20% 98%;
  
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --border: 160 15% 18%;
+    --input: 160 15% 18%;
+    --ring: 160 40% 45%;
   }
 }
  
@@ -84,5 +84,14 @@
 
 /* Base button physics constraint (tasteskill rule 4.5) */
 button, a[role="button"] {
-  @apply active:scale-[0.98] transition-transform duration-200;
+  @apply active:scale-[0.98] transition-all duration-300 ease-out;
+}
+
+/* Glassmorphism utility */
+.glass {
+  @apply bg-white/70 backdrop-blur-md border border-white/20 dark:bg-black/40 dark:border-white/10;
+}
+
+.card-hover-effect {
+  @apply transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/10;
 }

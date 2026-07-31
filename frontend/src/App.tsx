@@ -16,22 +16,18 @@ function App() {
     <AuthProvider>
       <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><p className="animate-pulse">Cargando...</p></div>}>
         <Routes>
-          {/* Public Routes */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<AddUser />} />
 
-          {/* Protected Routes */}
           <Route element={<ProtectedRoute />}>
             <Route path="/inmuebles" element={<InmuebleList />} />
             <Route path="/inmuebles/nuevo" element={<AddInmueble />} />
             <Route path="/inmuebles/:id" element={<InmuebleDetalle />} />
             <Route path="/inmuebles/:id/editar" element={<EditInmueble />} />
             <Route path="/usuarios" element={<UserList />} />
-            {/* Default to inmuebles */}
             <Route path="/" element={<Navigate to="/inmuebles" replace />} />
           </Route>
 
-          {/* Fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>

@@ -11,7 +11,7 @@ import { UpdateInmuebleDto } from '../infrastructure/dto/update-inmueble.dto';
 
 @Injectable()
 export class InmueblesService {
-  constructor(private readonly repository: InmueblesRepository) { }
+  constructor(private readonly repository: InmueblesRepository) {}
 
   async create(vendedorId: string, dto: CreateInmuebleDto) {
     return this.repository.create(vendedorId, dto);
@@ -39,11 +39,14 @@ export class InmueblesService {
     return this.findOne(id);
   }
 
-  async cambiarEstado(id: string, vendedorId: string, nuevoEstado: EstadoInmueble) {
+  async cambiarEstado(
+    id: string,
+    vendedorId: string,
+    nuevoEstado: EstadoInmueble,
+  ) {
     const inmueble = await this.findOne(id);
-    
-    // Si la transición es a RESERVADO o DISPONIBLE, cualquiera podría hacerlo (según TRR no está 100% claro, pero VENDER seguro solo el dueño).
-    // Asumiremos que solo el vendedorId puede cambiar cualquier estado de su propio inmueble para ser seguros (IDOR global).
+
+
     if (inmueble.vendedorId !== vendedorId) {
       throw new NotFoundException('Inmueble no encontrado');
     }

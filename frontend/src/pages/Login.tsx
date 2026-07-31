@@ -47,8 +47,8 @@ export default function LoginPage() {
       
       login(access_token, userResponse.data);
       navigate('/inmuebles');
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Error al iniciar sesión. Verifica tus credenciales.');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Error al iniciar sesión. Verifica tus credenciales.');
     } finally {
       setIsLoading(false);
     }

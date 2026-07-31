@@ -22,7 +22,7 @@ interface UsersResponse {
 export default function UsuariosPage() {
   const { logout, user: currentUser } = useAuth();
   const [page, setPage] = useState(1);
-  
+
   const { data, error, isLoading } = useSWR<UsersResponse>(
     `/usuarios?page=${page}&limit=12`,
     fetcher
@@ -58,7 +58,6 @@ export default function UsuariosPage() {
           </div>
         </div>
 
-        {/* LOADING STATE */}
         {isLoading && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
@@ -67,7 +66,6 @@ export default function UsuariosPage() {
           </div>
         )}
 
-        {/* ERROR STATE */}
         {error && (
           <div className="p-8 text-center bg-destructive/10 rounded-lg border border-destructive/20">
             <h3 className="text-lg font-semibold text-destructive mb-2">Error al cargar el directorio</h3>
@@ -78,7 +76,6 @@ export default function UsuariosPage() {
           </div>
         )}
 
-        {/* EMPTY STATE */}
         {data && data.data.length === 0 && (
           <div className="p-12 text-center bg-muted/30 rounded-lg border border-dashed">
             <span className="text-5xl mb-4 block">👥</span>
@@ -89,7 +86,6 @@ export default function UsuariosPage() {
           </div>
         )}
 
-        {/* DATA STATE */}
         {data && data.data.length > 0 && (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -98,7 +94,6 @@ export default function UsuariosPage() {
               ))}
             </div>
 
-            {/* PAGINATION */}
             <div className="flex justify-center items-center mt-12 gap-4">
               <Button
                 variant="outline"
