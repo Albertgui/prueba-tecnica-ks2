@@ -9,6 +9,13 @@ export interface Usuario {
 
 export type EstadoInmueble = 'DISPONIBLE' | 'RESERVADO' | 'VENDIDO';
 
+export interface TipoInmueble {
+  id: string;
+  codigo: string;
+  nombre: string;
+  activo: boolean;
+}
+
 export interface Inmueble {
   id: string;
   direccion: string;
@@ -20,6 +27,8 @@ export interface Inmueble {
   tipoInmuebleId: string;
   createdAt: string;
   updatedAt: string;
+  vendedor?: Pick<Usuario, 'id' | 'nombre' | 'email'>;
+  tipoInmueble?: TipoInmueble;
 }
 
 export interface PaginatedResponse<T> {

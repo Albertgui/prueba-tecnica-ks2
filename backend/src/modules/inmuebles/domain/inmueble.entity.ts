@@ -19,35 +19,23 @@ export class InmuebleEntity {
     return this._estado;
   }
 
-  reservar(): void {
-    if (this._estado !== EstadoInmueble.DISPONIBLE) {
-      throw new ConflictException(
-        `Solo se pueden reservar inmuebles disponibles. Estado actual: ${this._estado}`,
-      );
-    }
-    this._estado = EstadoInmueble.RESERVADO;
-  }
-
-  vender(): void {
+  cambiarEstado(nuevoEstado: EstadoInmueble): void {
     if (this._estado === EstadoInmueble.VENDIDO) {
-      throw new ConflictException(
-        'El inmueble ya ha sido vendido previamente.',
-      );
+      throw new ConflictException('Un inmueble vendido no puede cambiar de estado.');
     }
-    if (this._estado !== EstadoInmueble.DISPONIBLE) {
-      throw new ConflictException(
-        `Solo se pueden vender inmuebles disponibles.`,
-      );
-    }
-    this._estado = EstadoInmueble.VENDIDO;
-  }
 
-  liberar(): void {
-    if (this._estado !== EstadoInmueble.RESERVADO) {
-      throw new ConflictException(
-        `Solo se pueden liberar inmuebles reservados. Estado actual: ${this._estado}`,
-      );
+    if (nuevoEstado === EstadoInmueble.RESERVADO && this._estado !== EstadoInmueble.DISPONIBLE) {
+      throw new ConflictException('Solo se pueden reservar inmuebles disponibles.');
     }
-    this._estado = EstadoInmueble.DISPONIBLE;
+
+    if (nuevoEstado === EstadoInmueble.VENDIDO && this._estado !== EstadoInmueble.DISPONIBLE) {
+      throw new ConflictException('Solo se pueden vender inmuebles disponibles.');
+    }
+
+    if (nuevoEstado === EstadoInmueble.DISPONIBLE && this._estado !== EstadoInmueble.RESERVADO) {
+      throw new ConflictException('Solo se pueden liberar (hacer disponibles) inmuebles reservados.');
+    }
+
+    this._estado = nuevoEstado;
   }
 }

@@ -4,7 +4,7 @@ import {
   Body,
   Param,
   Delete,
-  Put,
+  Patch,
   UseGuards,
   Request,
   NotFoundException,
@@ -32,7 +32,7 @@ export class UsuariosController {
     return this.usuariosService.findOne(id);
   }
 
-  @Put(':id')
+  @Patch(':id')
   update(
     @Param('id') id: string,
     @Body() updateUsuarioDto: UpdateUsuarioDto,

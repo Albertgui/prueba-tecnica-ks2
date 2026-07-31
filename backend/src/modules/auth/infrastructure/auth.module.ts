@@ -12,7 +12,7 @@ import { UsuariosModule } from 'src/modules/usuarios/infrastructure/usuarios.mod
     PassportModule,
     JwtModule.registerAsync({
       useFactory: () => ({
-        secret: process.env.JWT_SECRET || 'super-secret-jwt-key',
+        secret: process.env.JWT_SECRET,
         signOptions: { expiresIn: '1d' },
       }),
     }),

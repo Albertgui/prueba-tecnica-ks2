@@ -1,5 +1,5 @@
 import { IsOptional, IsNumber, IsString, IsEnum, Min } from 'class-validator';
-import { Type } from 'class-transformer';
+import { Type, Transform } from 'class-transformer';
 import { EstadoInmueble } from '@prisma/client';
 
 export class FilterInmuebleDto {
@@ -37,4 +37,22 @@ export class FilterInmuebleDto {
   @IsOptional()
   @IsString({ message: 'El tipo de inmueble debe ser texto' })
   tipoInmuebleId?: string;
+
+  @IsOptional()
+  @Transform(({ value }) => value === 'true' || value === true)
+  soloMios?: boolean;
+
+  @IsOptional()
+  @IsString({ message: 'El orderBy debe ser texto' })
+  @IsEnum(['precio', 'createdAt'], { message: 'orderBy solo puede ser precio o createdAt' })
+  orderBy?: 'precio' | 'createdAt';
+
+  @IsOptional()
+  @IsString({ message: 'El order debe ser texto' })
+  @IsEnum(['asc', 'desc', 'ASC', 'DESC'], { message: 'order solo puede ser ASC o DESC' })
+  order?: 'asc' | 'desc' | 'ASC' | 'DESC';
+
+  @IsOptional()
+  @IsString({ message: 'La búsqueda debe ser texto' })
+  search?: string;
 }

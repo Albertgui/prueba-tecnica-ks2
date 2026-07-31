@@ -7,7 +7,7 @@ interface Props {
   user: Usuario;
 }
 
-export function UserCard({ user }: Props) {
+export function UserItem({ user }: Props) {
   // Generate initials for avatar fallback
   const initials = user.nombre
     .split(' ')

@@ -1,13 +1,18 @@
 import type { Inmueble } from '@/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Bed, Maximize } from 'lucide-react';
+import { MapPin, Bed, Maximize, User } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
 
 interface Props {
   inmueble: Inmueble;
 }
 
-export function InmuebleCard({ inmueble }: Props) {
+export function InmuebleItem({ inmueble }: Props) {
+  const { user } = useAuth();
+  const isOwner = user?.id === inmueble.vendedorId;
+
   const getEstadoColor = (estado: string) => {
     switch (estado) {
       case 'DISPONIBLE':
@@ -35,6 +40,12 @@ export function InmuebleCard({ inmueble }: Props) {
         </div>
       </div>
       
+      {isOwner && (
+        <div className="bg-primary text-primary-foreground text-xs py-1 px-3 text-center font-medium flex items-center justify-center">
+          <User className="w-3 h-3 mr-1" /> Tu publicación
+        </div>
+      )}
+
       <CardHeader className="pb-2">
         <div className="flex justify-between items-start gap-4">
           <CardTitle className="line-clamp-1 text-xl font-bold">
@@ -59,6 +70,14 @@ export function InmuebleCard({ inmueble }: Props) {
           </div>
         </div>
       </CardContent>
+      <div className="p-4 pt-0 border-t mt-4 flex items-center justify-between">
+        <Link 
+          to={`/inmuebles/${inmueble.id}`}
+          className="text-primary hover:underline text-sm font-medium w-full text-center"
+        >
+          Ver Detalles
+        </Link>
+      </div>
     </Card>
   );
 }

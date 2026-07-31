@@ -2,21 +2,26 @@ import { useState } from 'react';
 import useSWR from 'swr';
 import { fetcher } from '@/services/api';
 import type { Inmueble, PaginatedResponse } from '@/types';
-import { InmuebleCard } from '@/components/inmuebles/InmuebleCard';
+import { InmuebleItem } from '@/components/inmuebles/InmuebleItem';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuth } from '@/hooks/useAuth';
 import { Link } from 'react-router-dom';
 
-export default function InmueblesPage() {
+export default function InmuebleList() {
   const { logout, user } = useAuth();
   const [page, setPage] = useState(1);
   const [estadoFilter, setEstadoFilter] = useState<string>('ALL');
   
-  const endpoint = estadoFilter === 'ALL' 
-    ? `/inmuebles?page=${page}&limit=12` 
-    : `/inmuebles?page=${page}&limit=12&estado=${estadoFilter}`;
+  const [soloMios, setSoloMios] = useState(false);
+  
+  const endpoint = (() => {
+    let base = `/inmuebles?page=${page}&limit=12`;
+    if (estadoFilter !== 'ALL') base += `&estado=${estadoFilter}`;
+    if (soloMios) base += `&soloMios=true`;
+    return base;
+  })();
 
   const { data, error, isLoading } = useSWR<PaginatedResponse<Inmueble>>(
     endpoint,
@@ -47,10 +52,26 @@ export default function InmueblesPage() {
 
       <main className="container mx-auto px-4 py-8">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
-          <h2 className="text-3xl font-bold tracking-tight">Catálogo de Inmuebles</h2>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+            <h2 className="text-3xl font-bold tracking-tight">Catálogo de Inmuebles</h2>
+            <Link to="/inmuebles/nuevo">
+              <Button>Publicar Inmueble</Button>
+            </Link>
+          </div>
           
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-muted-foreground">Filtrar por disponibilidad:</span>
+          <div className="flex flex-wrap items-center gap-4">
+            <Button
+              variant={soloMios ? "default" : "outline"}
+              onClick={() => {
+                setSoloMios(!soloMios);
+                setPage(1);
+              }}
+            >
+              Mis Inmuebles
+            </Button>
+
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium text-muted-foreground hidden lg:inline-block">Filtrar:</span>
             <Select 
               value={estadoFilter} 
               onValueChange={(val: string) => {
@@ -68,6 +89,7 @@ export default function InmueblesPage() {
                 <SelectItem value="VENDIDO">Vendido</SelectItem>
               </SelectContent>
             </Select>
+            </div>
           </div>
         </div>
 
@@ -113,7 +135,7 @@ export default function InmueblesPage() {
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {data.data.map((inmueble) => (
-                <InmuebleCard key={inmueble.id} inmueble={inmueble} />
+                <InmuebleItem key={inmueble.id} inmueble={inmueble} />
               ))}
             </div>
 

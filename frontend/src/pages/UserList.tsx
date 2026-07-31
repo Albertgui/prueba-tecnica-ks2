@@ -2,7 +2,7 @@ import { useState } from 'react';
 import useSWR from 'swr';
 import { fetcher } from '@/services/api';
 import type { Usuario } from '@/types';
-import { UserCard } from '@/components/usuarios/UserCard';
+import { UserItem } from '@/components/usuarios/UserItem';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
@@ -24,7 +24,7 @@ export default function UsuariosPage() {
   const [page, setPage] = useState(1);
   
   const { data, error, isLoading } = useSWR<UsersResponse>(
-    `/auth/users?page=${page}&limit=12`,
+    `/usuarios?page=${page}&limit=12`,
     fetcher
   );
 
@@ -94,7 +94,7 @@ export default function UsuariosPage() {
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {data.data.map((user) => (
-                <UserCard key={user.id} user={user} />
+                <UserItem key={user.id} user={user} />
               ))}
             </div>
 
