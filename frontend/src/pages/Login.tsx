@@ -55,7 +55,7 @@ export default function LoginPage() {
 
   return (
     <main className="min-h-screen w-full flex flex-col lg:flex-row bg-background selection:bg-primary/20 selection:text-primary">
-      {/* LADO IZQUIERDO: Branding (Oculto en móvil) */}
+      {}
       <div className="hidden lg:flex w-1/2 bg-foreground relative overflow-hidden flex-col justify-between p-12">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/30 to-background opacity-20 z-0"></div>
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/20 rounded-full blur-[100px] pointer-events-none -translate-y-1/2 translate-x-1/3"></div>
@@ -88,7 +88,7 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* LADO DERECHO: Formulario */}
+      {}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 relative">
         <Link to="/" className="absolute top-8 left-8 lg:hidden inline-flex items-center text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
           <ArrowLeft className="w-4 h-4 mr-2" /> Volver

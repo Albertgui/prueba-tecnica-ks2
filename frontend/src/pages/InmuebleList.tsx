@@ -66,7 +66,7 @@ export default function InmuebleList() {
       <Header />
 
       <main>
-        {/* HERO SECTION */}
+        {}
         <div className="relative pt-20 pb-28 sm:pt-28 sm:pb-36 overflow-hidden bg-foreground">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/30 to-background opacity-20"></div>
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/20 rounded-full blur-[100px] pointer-events-none -translate-y-1/2 translate-x-1/3"></div>
