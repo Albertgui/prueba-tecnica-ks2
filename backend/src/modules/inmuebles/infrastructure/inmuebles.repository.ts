@@ -33,7 +33,7 @@ export class InmueblesRepository {
       include: {
         tipoInmueble: true,
         vendedor: { select: { id: true, nombre: true, email: true } },
-      }
+      },
     });
     return record ? this.mapToEntity(record) : null;
   }
@@ -126,7 +126,7 @@ export class InmueblesRepository {
     });
   }
 
-    private mapToEntity(
+  private mapToEntity(
     record: Prisma.InmuebleGetPayload<Record<string, never>> | any,
   ): InmuebleEntity {
     return new InmuebleEntity(
@@ -141,7 +141,7 @@ export class InmueblesRepository {
       record.createdAt,
       record.updatedAt,
       record.vendedor,
-      record.tipoInmueble
+      record.tipoInmueble,
     );
   }
 }

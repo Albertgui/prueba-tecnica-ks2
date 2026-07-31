@@ -23,20 +23,28 @@ export class InmuebleEntity {
 
   cambiarEstado(nuevoEstado: EstadoInmueble): void {
     if (this._estado === EstadoInmueble.VENDIDO) {
-      throw new ConflictException('Un inmueble vendido no puede cambiar de estado.');
+      throw new ConflictException(
+        'Un inmueble vendido no puede cambiar de estado.',
+      );
     }
 
     if (nuevoEstado === EstadoInmueble.RESERVADO) {
       if (this._estado !== EstadoInmueble.DISPONIBLE) {
-        throw new ConflictException('Solo se pueden reservar inmuebles disponibles.');
+        throw new ConflictException(
+          'Solo se pueden reservar inmuebles disponibles.',
+        );
       }
     } else if (nuevoEstado === EstadoInmueble.VENDIDO) {
       if (this._estado !== EstadoInmueble.RESERVADO) {
-        throw new ConflictException('El inmueble debe estar reservado antes de marcarse como vendido.');
+        throw new ConflictException(
+          'El inmueble debe estar reservado antes de marcarse como vendido.',
+        );
       }
     } else if (nuevoEstado === EstadoInmueble.DISPONIBLE) {
       if (this._estado !== EstadoInmueble.RESERVADO) {
-        throw new ConflictException('Solo se pueden liberar (hacer disponibles) inmuebles reservados.');
+        throw new ConflictException(
+          'Solo se pueden liberar (hacer disponibles) inmuebles reservados.',
+        );
       }
     }
 
@@ -44,9 +52,10 @@ export class InmuebleEntity {
   }
 
   toJSON() {
-    const { _estado, ...rest } = this as any;
+    const obj = { ...this } as any;
+    delete obj._estado;
     return {
-      ...rest,
+      ...obj,
       estado: this.estado,
     };
   }

@@ -5,9 +5,8 @@ import type { Usuario } from '@/types';
 import { UserItem } from '@/components/usuarios/UserItem';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
-import { useAuth } from '@/hooks/useAuth';
-import { Link } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { Header } from '@/components/layout/Header';
+import { Users, Frown } from 'lucide-react';
 
 interface UsersResponse {
   data: Usuario[];
@@ -20,7 +19,6 @@ interface UsersResponse {
 }
 
 export default function UsuariosPage() {
-  const { logout, user: currentUser } = useAuth();
   const [page, setPage] = useState(1);
 
   const { data, error, isLoading } = useSWR<UsersResponse>(
@@ -29,84 +27,83 @@ export default function UsuariosPage() {
   );
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b bg-card">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            <h1 className="text-2xl font-bold tracking-tight">Real Estate Pro</h1>
-            <div className="h-6 w-px bg-border hidden sm:block"></div>
-            <Link to="/inmuebles" className="text-sm font-medium text-muted-foreground hover:text-foreground hidden sm:flex items-center transition-colors">
-              <ArrowLeft className="w-4 h-4 mr-1" /> Volver a Inmuebles
-            </Link>
-          </div>
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-muted-foreground hidden sm:inline-block">
-              Hola, {currentUser?.nombre}
-            </span>
-            <Button variant="outline" size="sm" onClick={logout}>
-              Cerrar sesión
-            </Button>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-background pb-24">
+      <Header backUrl="/inmuebles" backLabel="Volver a Inmuebles" />
 
-      <main className="container mx-auto px-4 py-8 max-w-5xl">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
-          <div>
-            <h2 className="text-3xl font-bold tracking-tight">Directorio de Agentes</h2>
-            <p className="text-muted-foreground mt-1">Conoce a los profesionales registrados en la plataforma.</p>
+      {}
+      <div className="relative pt-20 pb-28 sm:pt-28 sm:pb-36 overflow-hidden bg-foreground">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-background opacity-20"></div>
+        <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-primary/20 rounded-full blur-[100px] pointer-events-none -translate-y-1/2 -translate-x-1/3"></div>
+        
+        <div className="container relative z-10 mx-auto px-4 text-center max-w-3xl">
+          <div className="inline-flex items-center justify-center p-3 bg-primary/10 rounded-2xl mb-6 shadow-lg shadow-black/50 border border-primary/20">
+            <Users className="w-8 h-8 text-primary" />
           </div>
+          <h2 className="text-4xl sm:text-6xl font-black text-background tracking-tight drop-shadow-lg mb-6 leading-tight">
+            Directorio de Agentes.
+          </h2>
+          <p className="text-lg sm:text-xl text-background/80 mb-10 font-medium max-w-2xl mx-auto">
+            Conoce a la red de profesionales inmobiliarios de mayor confianza. Listos para ayudarte a encontrar tu próximo hogar.
+          </p>
         </div>
+      </div>
 
+      <main className="container mx-auto px-4 -mt-12 relative z-20 max-w-6xl">
         {isLoading && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...Array(6)].map((_, i) => (
-              <Skeleton key={i} className="h-28 w-full rounded-xl" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 pt-8">
+            {[...Array(8)].map((_, i) => (
+              <div key={i} className="flex flex-col space-y-4">
+                <Skeleton className="h-64 w-full rounded-3xl" />
+              </div>
             ))}
           </div>
         )}
 
         {error && (
-          <div className="p-8 text-center bg-destructive/10 rounded-lg border border-destructive/20">
-            <h3 className="text-lg font-semibold text-destructive mb-2">Error al cargar el directorio</h3>
-            <p className="text-muted-foreground">Ocurrió un problema al obtener los agentes. Por favor, intenta más tarde.</p>
-            <Button variant="outline" className="mt-4" onClick={() => window.location.reload()}>
+          <div className="p-12 text-center bg-destructive/5 rounded-3xl border border-destructive/20 max-w-2xl mx-auto mt-12 shadow-sm">
+            <Frown className="w-16 h-16 mx-auto text-destructive/50 mb-4" />
+            <h3 className="text-2xl font-bold text-destructive mb-2">Error de Conexión</h3>
+            <p className="text-muted-foreground text-lg mb-6">No pudimos conectar con el servidor para obtener el directorio. Por favor, intenta más tarde.</p>
+            <Button className="rounded-full px-8 font-bold" onClick={() => window.location.reload()}>
               Reintentar
             </Button>
           </div>
         )}
 
-        {data && data.data.length === 0 && (
-          <div className="p-12 text-center bg-muted/30 rounded-lg border border-dashed">
-            <span className="text-5xl mb-4 block">👥</span>
-            <h3 className="text-xl font-semibold mb-2">No se encontraron agentes</h3>
-            <p className="text-muted-foreground max-w-sm mx-auto">
-              Actualmente no hay otros usuarios registrados en el sistema.
+        {data && data.data.length === 0 && !isLoading && (
+          <div className="p-16 text-center bg-muted/20 rounded-3xl border border-dashed border-border/80 max-w-3xl mx-auto mt-12">
+            <span className="text-6xl mb-6 block opacity-50">👥</span>
+            <h3 className="text-2xl font-bold mb-3">No hay agentes</h3>
+            <p className="text-muted-foreground text-lg max-w-md mx-auto mb-8">
+              Actualmente no hay otros usuarios registrados en el sistema. ¡Eres el único aquí!
             </p>
           </div>
         )}
 
-        {data && data.data.length > 0 && (
+        {data && data.data.length > 0 && !isLoading && (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 pt-8">
               {data.data.map((user) => (
                 <UserItem key={user.id} user={user} />
               ))}
             </div>
 
-            <div className="flex justify-center items-center mt-12 gap-4">
+            {}
+            <div className="flex justify-center items-center mt-16 gap-2 bg-muted/30 w-fit mx-auto p-2 rounded-full border border-border/50 backdrop-blur-md">
               <Button
-                variant="outline"
+                variant="ghost"
+                className="rounded-full font-bold px-6 hover:bg-background shadow-sm"
                 disabled={page === 1}
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
               >
                 Anterior
               </Button>
-              <span className="text-sm font-medium">
-                Página {data.meta.page} de {data.meta.totalPages}
+              <span className="text-sm font-bold text-muted-foreground px-4">
+                Página <span className="text-foreground">{data.meta.page}</span> de {data.meta.totalPages}
               </span>
               <Button
-                variant="outline"
+                variant="ghost"
+                className="rounded-full font-bold px-6 hover:bg-background shadow-sm"
                 disabled={page === data.meta.totalPages}
                 onClick={() => setPage((p) => Math.min(data.meta.totalPages, p + 1))}
               >

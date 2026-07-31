@@ -1,16 +1,18 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useParams, Link } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import useSWR from 'swr';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { api, fetcher } from '@/services/api';
 import type { Inmueble, TipoInmueble } from '@/types';
 import { useAuth } from '@/hooks/useAuth';
+import { Header } from '@/components/layout/Header';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Loader2, ArrowLeft } from 'lucide-react';
+import { Loader2, MapPin, DollarSign, Home, Bed, Maximize, Building2, Pencil } from 'lucide-react';
 import { toast } from 'sonner';
 
 const inmuebleSchema = z.object({
@@ -38,6 +40,7 @@ export default function EditInmueble() {
   const {
     register,
     handleSubmit,
+    control,
     reset,
     formState: { errors, isSubmitting },
   } = useForm<InmuebleFormValues>({
@@ -80,18 +83,23 @@ export default function EditInmueble() {
 
   if (isLoadingInmueble) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-2xl">
-        <Skeleton className="h-8 w-48 mb-8" />
-        <Skeleton className="h-[500px] w-full rounded-xl" />
+      <div className="min-h-screen bg-background pb-12">
+        <Header backUrl={`/inmuebles/${id}`} backLabel="Cancelar edición" />
+        <div className="container mx-auto px-4 mt-8 max-w-5xl">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <div className="lg:col-span-5"><Skeleton className="h-[400px] w-full rounded-3xl" /></div>
+            <div className="lg:col-span-7"><Skeleton className="h-[600px] w-full rounded-3xl" /></div>
+          </div>
+        </div>
       </div>
     );
   }
 
   if (!inmueble) {
     return (
-      <div className="container mx-auto px-4 py-16 text-center">
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4 text-center">
         <h2 className="text-2xl font-bold text-destructive mb-4">Inmueble no encontrado</h2>
-        <Button onClick={() => navigate('/inmuebles')} variant="outline">
+        <Button onClick={() => navigate('/inmuebles')} variant="outline" className="rounded-xl">
           Volver al catálogo
         </Button>
       </div>
@@ -99,110 +107,172 @@ export default function EditInmueble() {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-12">
-      <header className="border-b bg-card mb-8">
-        <div className="container mx-auto px-4 py-4">
-          <Link to={`/inmuebles/${id}`} className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-            <ArrowLeft className="w-4 h-4 mr-2" /> Cancelar edición
-          </Link>
-        </div>
-      </header>
+    <div className="min-h-screen bg-background pb-12 selection:bg-primary/20 selection:text-primary">
+      <Header backUrl={`/inmuebles/${id}`} backLabel="Cancelar edición" />
 
-      <main className="container mx-auto px-4 max-w-2xl">
-        <div className="bg-card p-8 rounded-xl border shadow-sm">
-          <h1 className="text-3xl font-bold mb-2">Editar Inmueble</h1>
-          <p className="text-muted-foreground mb-8">
-            Modifica los detalles de tu publicación.
-          </p>
-
-          {error && (
-            <div className="p-4 mb-6 text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md">
-              {error}
+      <main className="container mx-auto px-4 mt-8 max-w-5xl">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          
+          <div className="lg:col-span-5 flex flex-col justify-center space-y-6 bg-gradient-to-br from-primary/10 via-background to-background p-8 rounded-3xl border border-primary/10 shadow-sm relative overflow-hidden">
+            <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
+            
+            <div className="inline-flex items-center w-fit px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold tracking-wide uppercase z-10">
+              <Pencil className="w-3.5 h-3.5 mr-2" />
+              Editar Listado
             </div>
-          )}
-
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Dirección</label>
-              <Input
-                placeholder="Ej. Av. Siempre Viva 742"
-                {...register('direccion')}
-              />
-              {errors.direccion && (
-                <p className="text-sm text-destructive">{errors.direccion.message}</p>
-              )}
+            <h1 className="text-4xl lg:text-5xl font-bold tracking-tight text-foreground leading-tight z-10">
+              Mantén tu propiedad <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/60">actualizada.</span>
+            </h1>
+            <p className="text-lg text-muted-foreground z-10">
+              Asegúrate de que la información sea correcta para no perder potenciales clientes interesados.
+            </p>
+            <div className="hidden lg:block mt-8 p-6 glass rounded-2xl border shadow-sm z-10">
+              <h2 className="font-semibold text-foreground flex items-center mb-4">
+                <Home className="w-4 h-4 mr-2 text-primary" /> Consejos para destacar
+              </h2>
+              <ul className="text-sm text-muted-foreground space-y-3">
+                <li className="flex items-start"><span className="text-primary mr-2">•</span> Revisa si el precio de mercado ha cambiado.</li>
+                <li className="flex items-start"><span className="text-primary mr-2">•</span> Mantén los datos exactos para generar confianza.</li>
+              </ul>
             </div>
+          </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Precio ($)</label>
+          {}
+          <div className="lg:col-span-7 bg-card p-6 sm:p-8 rounded-3xl border shadow-xl shadow-primary/5">
+            <h2 className="text-2xl font-semibold mb-6">Detalles del Inmueble</h2>
+
+            {error && (
+              <div className="p-4 mb-6 text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-xl flex items-start animate-in fade-in slide-in-from-top-2">
+                <div className="mr-2 mt-0.5 font-bold">⚠️</div>
+                <div>{error}</div>
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+              
+              {}
+              <div className="space-y-2 group">
+                <label className="text-sm font-medium flex items-center text-foreground group-focus-within:text-primary transition-colors">
+                  <MapPin className="w-4 h-4 mr-2 text-muted-foreground group-focus-within:text-primary transition-colors" /> Dirección
+                </label>
                 <Input
-                  type="number"
-                  placeholder="Ej. 150000"
-                  {...register('precio')}
+                  className="h-12 bg-muted/40 hover:bg-muted/60 focus-visible:bg-transparent transition-all rounded-xl"
+                  placeholder="Ej. Av. Siempre Viva 742, Springfield"
+                  {...register('direccion')}
                 />
-                {errors.precio && (
-                  <p className="text-sm text-destructive">{errors.precio.message}</p>
+                {errors.direccion && (
+                  <p className="text-sm text-destructive font-medium animate-in fade-in">{errors.direccion.message}</p>
                 )}
               </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Tipo de Inmueble</label>
-                <select
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  {...register('tipoInmuebleId')}
+              {}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                
+                {}
+                <div className="space-y-2 group">
+                  <label className="text-sm font-medium flex items-center text-foreground group-focus-within:text-primary transition-colors">
+                    <Building2 className="w-4 h-4 mr-2 text-muted-foreground group-focus-within:text-primary transition-colors" /> Tipo de Inmueble
+                  </label>
+                  <Controller
+                    name="tipoInmuebleId"
+                    control={control}
+                    render={({ field }) => (
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <SelectTrigger aria-label="Seleccionar Tipo de Inmueble" className="h-12 bg-muted/40 hover:bg-muted/60 focus-visible:bg-transparent transition-all rounded-xl">
+                          <SelectValue placeholder="Selecciona un tipo..." />
+                        </SelectTrigger>
+                        <SelectContent className="rounded-xl">
+                          {tipos?.map((t) => (
+                            <SelectItem key={t.id} value={t.id} className="rounded-lg cursor-pointer">
+                              {t.nombre}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                  {errors.tipoInmuebleId && (
+                    <p className="text-sm text-destructive font-medium animate-in fade-in">{errors.tipoInmuebleId.message}</p>
+                  )}
+                </div>
+
+                {}
+                <div className="space-y-2 group">
+                  <label className="text-sm font-medium flex items-center text-foreground group-focus-within:text-primary transition-colors">
+                    <DollarSign className="w-4 h-4 mr-2 text-muted-foreground group-focus-within:text-primary transition-colors" /> Precio ($)
+                  </label>
+                  <Input
+                    className="h-12 bg-muted/40 hover:bg-muted/60 focus-visible:bg-transparent transition-all rounded-xl"
+                    type="number"
+                    placeholder="Ej. 150000"
+                    {...register('precio')}
+                  />
+                  {errors.precio && (
+                    <p className="text-sm text-destructive font-medium animate-in fade-in">{errors.precio.message}</p>
+                  )}
+                </div>
+
+                {}
+                <div className="space-y-2 group">
+                  <label className="text-sm font-medium flex items-center text-foreground group-focus-within:text-primary transition-colors">
+                    <Bed className="w-4 h-4 mr-2 text-muted-foreground group-focus-within:text-primary transition-colors" /> Habitaciones
+                  </label>
+                  <Input
+                    className="h-12 bg-muted/40 hover:bg-muted/60 focus-visible:bg-transparent transition-all rounded-xl"
+                    type="number"
+                    placeholder="Ej. 3"
+                    {...register('habitaciones')}
+                  />
+                  {errors.habitaciones && (
+                    <p className="text-sm text-destructive font-medium animate-in fade-in">{errors.habitaciones.message}</p>
+                  )}
+                </div>
+
+                {}
+                <div className="space-y-2 group">
+                  <label className="text-sm font-medium flex items-center text-foreground group-focus-within:text-primary transition-colors">
+                    <Maximize className="w-4 h-4 mr-2 text-muted-foreground group-focus-within:text-primary transition-colors" /> Área (m²)
+                  </label>
+                  <Input
+                    className="h-12 bg-muted/40 hover:bg-muted/60 focus-visible:bg-transparent transition-all rounded-xl"
+                    type="number"
+                    placeholder="Ej. 120"
+                    {...register('metrosCuadrados')}
+                  />
+                  {errors.metrosCuadrados && (
+                    <p className="text-sm text-destructive font-medium animate-in fade-in">{errors.metrosCuadrados.message}</p>
+                  )}
+                </div>
+
+              </div>
+
+              {}
+              <div className="pt-8 mt-6 border-t flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4">
+                <Button 
+                  type="button" 
+                  variant="ghost" 
+                  className="h-12 rounded-xl"
+                  onClick={() => navigate(`/inmuebles/${id}`)}
                 >
-                  <option value="">Selecciona un tipo...</option>
-                  {tipos?.map((t) => (
-                    <option key={t.id} value={t.id}>{t.nombre}</option>
-                  ))}
-                </select>
-                {errors.tipoInmuebleId && (
-                  <p className="text-sm text-destructive">{errors.tipoInmuebleId.message}</p>
-                )}
+                  Cancelar
+                </Button>
+                <Button 
+                  type="submit" 
+                  disabled={isSubmitting}
+                  className="h-12 rounded-xl px-8 bg-gradient-to-r from-primary to-primary/80 hover:to-primary shadow-md hover:shadow-primary/20 transition-all duration-300 transform active:scale-[0.98]"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                      Guardando...
+                    </>
+                  ) : (
+                    'Guardar Cambios'
+                  )}
+                </Button>
               </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Habitaciones</label>
-                <Input
-                  type="number"
-                  placeholder="Ej. 3"
-                  {...register('habitaciones')}
-                />
-                {errors.habitaciones && (
-                  <p className="text-sm text-destructive">{errors.habitaciones.message}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Metros Cuadrados</label>
-                <Input
-                  type="number"
-                  placeholder="Ej. 120"
-                  {...register('metrosCuadrados')}
-                />
-                {errors.metrosCuadrados && (
-                  <p className="text-sm text-destructive">{errors.metrosCuadrados.message}</p>
-                )}
-              </div>
-            </div>
-
-            <div className="pt-4 flex justify-end gap-4">
-              <Button type="button" variant="outline" onClick={() => navigate(`/inmuebles/${id}`)}>
-                Cancelar
-              </Button>
-              <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Guardando...
-                  </>
-                ) : (
-                  'Guardar Cambios'
-                )}
-              </Button>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
       </main>
     </div>

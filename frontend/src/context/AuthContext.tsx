@@ -11,7 +11,7 @@ interface AuthContextType {
   logout: () => void;
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
+
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const storedToken = localStorage.getItem('token');
       if (storedToken) {
         try {
-          // Verify token and load user
+          
           const { data } = await api.get<Usuario>('/auth/me');
           setToken(storedToken);
           setUser(data);

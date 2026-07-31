@@ -18,7 +18,10 @@ describe('InmueblesService', () => {
     softDelete: jest.fn(),
   };
 
-  const createMockInmueble = (estado: EstadoInmueble, vendedorId = 'vendedor-1') =>
+  const createMockInmueble = (
+    estado: EstadoInmueble,
+    vendedorId = 'vendedor-1',
+  ) =>
     new InmuebleEntity(
       'inmueble-1',
       'Calle 123',
@@ -57,7 +60,13 @@ describe('InmueblesService', () => {
 
   describe('create', () => {
     it('should create an inmueble', async () => {
-      const dto = { direccion: 'A', precio: 1, habitaciones: 1, metrosCuadrados: 1, tipoInmuebleId: 'T1' };
+      const dto = {
+        direccion: 'A',
+        precio: 1,
+        habitaciones: 1,
+        metrosCuadrados: 1,
+        tipoInmuebleId: 'T1',
+      };
       mockRepository.create.mockResolvedValue('created');
       const result = await service.create('vendedor-1', dto);
       expect(result).toBe('created');
@@ -70,7 +79,10 @@ describe('InmueblesService', () => {
       mockRepository.findAll.mockResolvedValue('paginated');
       const result = await service.findAll({ page: 1, limit: 10 });
       expect(result).toBe('paginated');
-      expect(repository.findAll).toHaveBeenCalledWith({ page: 1, limit: 10 }, undefined);
+      expect(repository.findAll).toHaveBeenCalledWith(
+        { page: 1, limit: 10 },
+        undefined,
+      );
     });
   });
 
@@ -92,20 +104,24 @@ describe('InmueblesService', () => {
     it('should throw NotFoundException if trying to update someone elses inmueble', async () => {
       const mock = createMockInmueble(EstadoInmueble.DISPONIBLE, 'vendedor-2');
       mockRepository.findById.mockResolvedValue(mock);
-      await expect(service.update('1', 'vendedor-1', {})).rejects.toThrow(NotFoundException);
+      await expect(service.update('1', 'vendedor-1', {})).rejects.toThrow(
+        NotFoundException,
+      );
     });
 
     it('should throw ConflictException if trying to update a VENDIDO inmueble', async () => {
       const mock = createMockInmueble(EstadoInmueble.VENDIDO, 'vendedor-1');
       mockRepository.findById.mockResolvedValue(mock);
-      await expect(service.update('1', 'vendedor-1', {})).rejects.toThrow(ConflictException);
+      await expect(service.update('1', 'vendedor-1', {})).rejects.toThrow(
+        ConflictException,
+      );
     });
 
     it('should update successfully', async () => {
       const mock = createMockInmueble(EstadoInmueble.DISPONIBLE, 'vendedor-1');
       mockRepository.findById.mockResolvedValue(mock);
       mockRepository.update.mockResolvedValue(undefined);
-      
+
       const result = await service.update('1', 'vendedor-1', { precio: 2000 });
       expect(repository.update).toHaveBeenCalledWith('1', { precio: 2000 });
       expect(result).toBe(mock);
@@ -116,24 +132,38 @@ describe('InmueblesService', () => {
     it('should throw NotFoundException if not owner', async () => {
       const mock = createMockInmueble(EstadoInmueble.DISPONIBLE, 'vendedor-2');
       mockRepository.findById.mockResolvedValue(mock);
-      await expect(service.cambiarEstado('1', 'vendedor-1', EstadoInmueble.RESERVADO)).rejects.toThrow(NotFoundException);
+      await expect(
+        service.cambiarEstado('1', 'vendedor-1', EstadoInmueble.RESERVADO),
+      ).rejects.toThrow(NotFoundException);
     });
 
     it('should throw ConflictException if transition is invalid', async () => {
       const mock = createMockInmueble(EstadoInmueble.DISPONIBLE, 'vendedor-1');
       mockRepository.findById.mockResolvedValue(mock);
-      // From DISPONIBLE to VENDIDO is invalid
-      await expect(service.cambiarEstado('1', 'vendedor-1', EstadoInmueble.VENDIDO)).rejects.toThrow(ConflictException);
+
+      await expect(
+        service.cambiarEstado('1', 'vendedor-1', EstadoInmueble.VENDIDO),
+      ).rejects.toThrow(ConflictException);
     });
 
     it('should change state successfully', async () => {
       const mock = createMockInmueble(EstadoInmueble.DISPONIBLE, 'vendedor-1');
       mockRepository.findById.mockResolvedValue(mock);
-      
-      const result = await service.cambiarEstado('1', 'vendedor-1', EstadoInmueble.RESERVADO);
+
+      const result = await service.cambiarEstado(
+        '1',
+        'vendedor-1',
+        EstadoInmueble.RESERVADO,
+      );
       expect(mock.estado).toBe(EstadoInmueble.RESERVADO);
-      expect(repository.updateState).toHaveBeenCalledWith('1', EstadoInmueble.RESERVADO);
-      expect(result).toEqual({ success: true, estado: EstadoInmueble.RESERVADO });
+      expect(repository.updateState).toHaveBeenCalledWith(
+        '1',
+        EstadoInmueble.RESERVADO,
+      );
+      expect(result).toEqual({
+        success: true,
+        estado: EstadoInmueble.RESERVADO,
+      });
     });
   });
 
@@ -141,14 +171,16 @@ describe('InmueblesService', () => {
     it('should throw NotFoundException if not owner', async () => {
       const mock = createMockInmueble(EstadoInmueble.DISPONIBLE, 'vendedor-2');
       mockRepository.findById.mockResolvedValue(mock);
-      await expect(service.remove('1', 'vendedor-1')).rejects.toThrow(NotFoundException);
+      await expect(service.remove('1', 'vendedor-1')).rejects.toThrow(
+        NotFoundException,
+      );
     });
 
     it('should soft delete successfully', async () => {
       const mock = createMockInmueble(EstadoInmueble.DISPONIBLE, 'vendedor-1');
       mockRepository.findById.mockResolvedValue(mock);
       mockRepository.softDelete.mockResolvedValue(undefined);
-      
+
       const result = await service.remove('1', 'vendedor-1');
       expect(repository.softDelete).toHaveBeenCalledWith('1');
       expect(result).toEqual({ success: true, message: 'Inmueble eliminado' });

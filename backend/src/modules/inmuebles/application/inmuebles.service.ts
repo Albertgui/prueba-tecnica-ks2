@@ -46,7 +46,6 @@ export class InmueblesService {
   ) {
     const inmueble = await this.findOne(id);
 
-
     if (inmueble.vendedorId !== vendedorId) {
       throw new NotFoundException('Inmueble no encontrado');
     }

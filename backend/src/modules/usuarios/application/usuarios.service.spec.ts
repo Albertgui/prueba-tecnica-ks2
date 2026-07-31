@@ -91,7 +91,7 @@ describe('UsuariosService', () => {
       const result = await service.update('user-123', dto);
 
       expect(repository.update).toHaveBeenCalledWith('user-123', dto);
-      expect(result.nombre).toEqual('Test User'); // findOne returns the mockUser
+      expect(result.nombre).toEqual('Test User');
     });
   });
 

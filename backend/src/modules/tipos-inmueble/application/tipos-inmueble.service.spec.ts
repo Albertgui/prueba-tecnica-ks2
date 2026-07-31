@@ -37,7 +37,9 @@ describe('TiposInmuebleService', () => {
 
   describe('findAll', () => {
     it('should return an array of tipos', async () => {
-      const result = [{ id: '1', codigo: 'CASA', nombre: 'Casa', activo: true }];
+      const result = [
+        { id: '1', codigo: 'CASA', nombre: 'Casa', activo: true },
+      ];
       mockRepository.findAll.mockResolvedValue(result);
 
       expect(await service.findAll()).toEqual(result);
@@ -47,7 +49,10 @@ describe('TiposInmuebleService', () => {
 
   describe('create', () => {
     it('should create and return a new tipo', async () => {
-      const dto: CreateTipoInmuebleDto = { codigo: 'APTO', nombre: 'Apartamento' };
+      const dto: CreateTipoInmuebleDto = {
+        codigo: 'APTO',
+        nombre: 'Apartamento',
+      };
       const expectedResult = { id: '2', ...dto, activo: true };
       mockRepository.create.mockResolvedValue(expectedResult);
 

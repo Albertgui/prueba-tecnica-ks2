@@ -10,7 +10,9 @@ async function bootstrap() {
 
   app.use(helmet());
   app.enableCors({
-    origin: process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',') : ['http://localhost:5173', 'http://localhost:4173'],
+    origin: process.env.FRONTEND_URL
+      ? process.env.FRONTEND_URL.split(',')
+      : ['http://localhost:5173', 'http://localhost:4173', 'http://localhost:5174'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
