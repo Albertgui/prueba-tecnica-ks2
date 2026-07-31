@@ -242,7 +242,7 @@ export default function InmuebleDetalle() {
                           </Button>
                         )}
 
-                        {inmueble.estado === 'RESERVADO' && (
+                        {(inmueble.estado === 'DISPONIBLE' || inmueble.estado === 'RESERVADO') && (
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
                               <Button

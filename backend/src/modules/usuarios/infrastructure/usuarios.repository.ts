@@ -21,6 +21,7 @@ export class UsuariosRepository {
       user.createdAt,
       user.updatedAt,
       user.deletedAt,
+      user.hashedRefreshToken,
     );
   }
 
@@ -38,6 +39,7 @@ export class UsuariosRepository {
       user.createdAt,
       user.updatedAt,
       user.deletedAt,
+      user.hashedRefreshToken,
     );
   }
 
@@ -83,6 +85,13 @@ export class UsuariosRepository {
     await this.prisma.usuario.update({
       where: { id },
       data: { deletedAt: new Date(), activo: false },
+    });
+  }
+
+  async updateRefreshToken(id: string, hashedRefreshToken: string | null): Promise<void> {
+    await this.prisma.usuario.update({
+      where: { id },
+      data: { hashedRefreshToken },
     });
   }
 }

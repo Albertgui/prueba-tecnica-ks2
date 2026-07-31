@@ -80,7 +80,8 @@ Registra un nuevo usuario en la plataforma.
 - **Response (201 Created):**
   ```json
   {
-    "access_token": "eyJhbG..."
+    "access_token": "eyJhbG...",
+    "refresh_token": "eyJhbG..."
   }
   ```
 
@@ -93,7 +94,23 @@ Inicia sesión y obtiene el token JWT.
     "password": "Password123!"
   }
   ```
-- **Response (201 Created):** `access_token`
+- **Response (201 Created):** 
+  ```json
+  {
+    "access_token": "eyJhbG...",
+    "refresh_token": "eyJhbG..."
+  }
+  ```
+
+#### `POST /auth/refresh`
+Refresca la sesión enviando el token de larga duración.
+- **Body:**
+  ```json
+  {
+    "refreshToken": "eyJhbG..."
+  }
+  ```
+- **Response (200 OK):** Nuevo `access_token` y `refresh_token`.
 
 ---
 

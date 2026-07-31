@@ -12,6 +12,7 @@ import { Request as ExpressRequest } from 'express';
 import { AuthService } from '../application/auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
+import { RefreshTokenDto } from './dto/refresh.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 
@@ -29,12 +30,21 @@ export class AuthController {
   }
 
   @ApiOperation({ summary: 'Iniciar sesión' })
-  @ApiResponse({ status: 200, description: 'Sesión iniciada', schema: { example: { access_token: 'jwt...' } } })
+  @ApiResponse({ status: 200, description: 'Sesión iniciada', schema: { example: { access_token: 'jwt...', refresh_token: 'jwt...' } } })
   @ApiResponse({ status: 401, description: 'Credenciales inválidas' })
   @Post('login')
   @HttpCode(HttpStatus.OK)
   async login(@Body() loginDto: LoginDto) {
     return this.authService.login(loginDto);
+  }
+
+  @ApiOperation({ summary: 'Refrescar token de acceso' })
+  @ApiResponse({ status: 200, description: 'Nuevos tokens generados', schema: { example: { access_token: 'jwt...', refresh_token: 'jwt...' } } })
+  @ApiResponse({ status: 401, description: 'Refresh token inválido o expirado' })
+  @Post('refresh')
+  @HttpCode(HttpStatus.OK)
+  async refresh(@Body() refreshDto: RefreshTokenDto) {
+    return this.authService.refreshTokens(refreshDto.refreshToken);
   }
 
   @ApiOperation({ summary: 'Obtener datos del usuario autenticado' })

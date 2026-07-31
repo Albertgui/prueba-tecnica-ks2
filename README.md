@@ -46,7 +46,29 @@ git clone https://github.com/Albertgui/prueba-tecnica-ks2.git
 cd prueba-tecnica-ks2
 ```
 
-### 2. Configurar y arrancar el Backend
+### 🐳 2. Despliegue Rápido (Docker Compose) - Recomendado
+
+Si tienes **Docker** instalado, puedes levantar todo el stack (Base de datos, Backend y Frontend) con un solo comando. No necesitas instalar Node.js ni PostgreSQL en tu máquina.
+
+```bash
+docker compose up --build
+```
+> **¿Qué hace este comando?**
+> - Descarga PostgreSQL y crea la base de datos `gestion_inmuebles`.
+> - Construye la imagen del Backend y automáticamente ejecuta las migraciones (`migrate deploy`) y las semillas (`seed`) antes de arrancar.
+> - Construye la imagen del Frontend, inyectando las variables de entorno, y lo sirve usando Nginx.
+
+Una vez que termine, las aplicaciones estarán disponibles en:
+- **Frontend (App Web):** `http://localhost:5173`
+- **Backend (API Docs Swagger):** `http://localhost:3000/api/docs`
+
+---
+
+### 💻 3. Despliegue Manual (Sin Docker)
+
+Si prefieres ejecutar el proyecto localmente sin Docker, sigue los siguientes pasos:
+
+#### 3.1. Configurar y arrancar el Backend
 
 ```bash
 cd backend

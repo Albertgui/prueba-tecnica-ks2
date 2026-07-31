@@ -9,7 +9,7 @@ export class CreateInmuebleDto {
 
   @ApiProperty({ example: 150000, description: 'Precio del inmueble' })
   @IsNumber({}, { message: 'El precio debe ser un número' })
-  @Min(0, { message: 'El precio no puede ser negativo' })
+  @Min(1, { message: 'El precio debe ser mayor a 0' })
   precio!: number;
 
   @ApiProperty({ example: 3, description: 'Número de habitaciones' })

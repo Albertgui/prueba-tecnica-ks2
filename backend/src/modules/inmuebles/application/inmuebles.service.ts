@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { EstadoInmueble } from '@prisma/client';
 import { InmueblesRepository } from '../infrastructure/inmuebles.repository';
+import { InvalidStateTransitionError } from '../domain/inmueble.entity';
 import { CreateInmuebleDto } from '../infrastructure/dto/create-inmueble.dto';
 import { FilterInmuebleDto } from '../infrastructure/dto/filter-inmueble.dto';
 import { UpdateInmuebleDto } from '../infrastructure/dto/update-inmueble.dto';
@@ -50,7 +51,14 @@ export class InmueblesService {
       throw new NotFoundException('Inmueble no encontrado');
     }
 
-    inmueble.cambiarEstado(nuevoEstado);
+    try {
+      inmueble.cambiarEstado(nuevoEstado);
+    } catch (error) {
+      if (error instanceof InvalidStateTransitionError) {
+        throw new ConflictException(error.message);
+      }
+      throw error;
+    }
     await this.repository.updateState(id, inmueble.estado);
     return { success: true, estado: inmueble.estado };
   }

@@ -1,5 +1,11 @@
-import { ConflictException } from '@nestjs/common';
 import { EstadoInmueble } from '@prisma/client';
+
+export class InvalidStateTransitionError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'InvalidStateTransitionError';
+  }
+}
 
 export class InmuebleEntity {
   constructor(
@@ -23,26 +29,29 @@ export class InmuebleEntity {
 
   cambiarEstado(nuevoEstado: EstadoInmueble): void {
     if (this._estado === EstadoInmueble.VENDIDO) {
-      throw new ConflictException(
+      throw new InvalidStateTransitionError(
         'Un inmueble vendido no puede cambiar de estado.',
       );
     }
 
     if (nuevoEstado === EstadoInmueble.RESERVADO) {
       if (this._estado !== EstadoInmueble.DISPONIBLE) {
-        throw new ConflictException(
+        throw new InvalidStateTransitionError(
           'Solo se pueden reservar inmuebles disponibles.',
         );
       }
     } else if (nuevoEstado === EstadoInmueble.VENDIDO) {
-      if (this._estado !== EstadoInmueble.RESERVADO) {
-        throw new ConflictException(
-          'El inmueble debe estar reservado antes de marcarse como vendido.',
+      if (
+        this._estado !== EstadoInmueble.DISPONIBLE &&
+        this._estado !== EstadoInmueble.RESERVADO
+      ) {
+        throw new InvalidStateTransitionError(
+          'Solo se pueden vender inmuebles disponibles o reservados.',
         );
       }
     } else if (nuevoEstado === EstadoInmueble.DISPONIBLE) {
       if (this._estado !== EstadoInmueble.RESERVADO) {
-        throw new ConflictException(
+        throw new InvalidStateTransitionError(
           'Solo se pueden liberar (hacer disponibles) inmuebles reservados.',
         );
       }

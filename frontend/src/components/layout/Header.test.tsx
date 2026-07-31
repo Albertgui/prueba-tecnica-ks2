@@ -17,7 +17,7 @@ describe('Header Component', () => {
   });
 
   it('renders branding', () => {
-    vi.mocked(useAuth).mockReturnValue({ user: null, logout: mockLogout, login: vi.fn(), registerUser: vi.fn(), isLoading: false });
+    vi.mocked(useAuth).mockReturnValue({ user: null, token: null, logout: mockLogout, login: vi.fn(), isLoading: false });
 
     render(
       <MemoryRouter>
@@ -29,7 +29,7 @@ describe('Header Component', () => {
   });
 
   it('shows login button when user is not authenticated', () => {
-    vi.mocked(useAuth).mockReturnValue({ user: null, logout: mockLogout, login: vi.fn(), registerUser: vi.fn(), isLoading: false });
+    vi.mocked(useAuth).mockReturnValue({ user: null, token: null, logout: mockLogout, login: vi.fn(), isLoading: false });
 
     render(
       <MemoryRouter>
@@ -42,8 +42,8 @@ describe('Header Component', () => {
   });
 
   it('shows user name and logout button when authenticated', () => {
-    const user = { id: '1', nombre: 'Juan', email: 'juan@test.com' };
-    vi.mocked(useAuth).mockReturnValue({ user, logout: mockLogout, login: vi.fn(), registerUser: vi.fn(), isLoading: false });
+    const user = { id: '1', nombre: 'Juan', email: 'juan@test.com' } as any;
+    vi.mocked(useAuth).mockReturnValue({ user, token: 'token', logout: mockLogout, login: vi.fn(), isLoading: false });
 
     render(
       <MemoryRouter>
@@ -57,8 +57,8 @@ describe('Header Component', () => {
   });
 
   it('calls logout when logout button is clicked', () => {
-    const user = { id: '1', nombre: 'Juan', email: 'juan@test.com' };
-    vi.mocked(useAuth).mockReturnValue({ user, logout: mockLogout, login: vi.fn(), registerUser: vi.fn(), isLoading: false });
+    const user = { id: '1', nombre: 'Juan', email: 'juan@test.com' } as any;
+    vi.mocked(useAuth).mockReturnValue({ user, token: 'token', logout: mockLogout, login: vi.fn(), isLoading: false });
 
     render(
       <MemoryRouter>
@@ -72,7 +72,7 @@ describe('Header Component', () => {
   });
 
   it('renders back link when backUrl is provided', () => {
-    vi.mocked(useAuth).mockReturnValue({ user: null, logout: mockLogout, login: vi.fn(), registerUser: vi.fn(), isLoading: false });
+    vi.mocked(useAuth).mockReturnValue({ user: null, token: null, logout: mockLogout, login: vi.fn(), isLoading: false });
 
     render(
       <MemoryRouter>

@@ -29,6 +29,9 @@ Esta es la aplicación Web Single Page Application (SPA) para el sistema de Gest
 3. **Arquitectura Orientada a Componentes:**
    Los componentes base de UI están centralizados en `src/components/ui/` (Botones, Inputs, Diálogos, etc.) asegurando una sola fuente de verdad para el sistema de diseño.
 
+4. **Seguridad Invisible (Refresh Tokens):**
+   Se configuró un *Interceptor* en Axios (`api.ts`) que intercepta errores `401 Unauthorized` si el *Access Token* de corta duración caduca. De forma transparente, pide un nuevo token usando el *Refresh Token* de larga duración y repite la petición original. Todo esto sucede en milisegundos y el usuario jamás nota que su sesión expiró en el fondo.
+
 ---
 
 ## 🛠️ Instalación y Despliegue Local

@@ -37,13 +37,13 @@ export default function LoginPage() {
     setError(null);
     try {
       const response = await api.post('/auth/login', data);
-      const { access_token } = response.data;
-      
+      const { access_token, refresh_token } = response.data;
+
       const userResponse = await api.get('/auth/me', {
         headers: { Authorization: `Bearer ${access_token}` }
       });
-      
-      login(access_token, userResponse.data);
+
+      login({ access_token, refresh_token }, userResponse.data);
       navigate('/inmuebles');
     } catch (err: any) {
       const msg = err.response?.data?.message || err.message || 'Error al iniciar sesión. Verifica tus credenciales.';
@@ -55,12 +55,12 @@ export default function LoginPage() {
 
   return (
     <main className="min-h-screen w-full flex flex-col lg:flex-row bg-background selection:bg-primary/20 selection:text-primary">
-      {}
+      { }
       <div className="hidden lg:flex w-1/2 bg-foreground relative overflow-hidden flex-col justify-between p-12">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/30 to-background opacity-20 z-0"></div>
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/20 rounded-full blur-[100px] pointer-events-none -translate-y-1/2 translate-x-1/3"></div>
         <div className="absolute bottom-0 left-0 w-[800px] h-[800px] bg-primary/10 rounded-full blur-[120px] pointer-events-none translate-y-1/2 -translate-x-1/3"></div>
-        
+
         <div className="relative z-10">
           <Link to="/" className="inline-flex items-center gap-3 group">
             <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center border border-primary/30 group-hover:bg-primary/30 transition-colors">
@@ -80,7 +80,7 @@ export default function LoginPage() {
             Únete a la red inmobiliaria más exclusiva y descubre propiedades que se adaptan perfectamente a tu estilo de vida.
           </p>
         </div>
-        
+
         <div className="relative z-10 flex gap-4 text-background/50 text-sm font-medium">
           <span>© 2026 RealEstatePro</span>
           <span>•</span>
@@ -88,12 +88,12 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {}
+      { }
       <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 relative">
         <Link to="/" className="absolute top-8 left-8 lg:hidden inline-flex items-center text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
           <ArrowLeft className="w-4 h-4 mr-2" /> Volver
         </Link>
-        
+
         <div className="w-full max-w-md mx-auto space-y-8">
           <div className="text-center lg:text-left space-y-2">
             <h2 className="text-3xl font-bold tracking-tight">Bienvenido de nuevo</h2>
@@ -109,10 +109,10 @@ export default function LoginPage() {
                   <FormItem>
                     <FormLabel className="font-bold">Correo Electrónico</FormLabel>
                     <FormControl>
-                      <Input 
-                        placeholder="correo@ejemplo.com" 
-                        className="h-12 rounded-xl bg-muted/50 border-transparent focus-visible:border-primary focus-visible:ring-primary/20 focus-visible:bg-background transition-all" 
-                        {...field} 
+                      <Input
+                        placeholder="correo@ejemplo.com"
+                        className="h-12 rounded-xl bg-muted/50 border-transparent focus-visible:border-primary focus-visible:ring-primary/20 focus-visible:bg-background transition-all"
+                        {...field}
                       />
                     </FormControl>
                     <FormMessage />
@@ -127,11 +127,11 @@ export default function LoginPage() {
                     <FormLabel className="font-bold">Contraseña</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <Input 
-                          type={showPassword ? 'text' : 'password'} 
-                          placeholder="********" 
-                          className="h-12 rounded-xl bg-muted/50 border-transparent focus-visible:border-primary focus-visible:ring-primary/20 focus-visible:bg-background transition-all pr-10" 
-                          {...field} 
+                        <Input
+                          type={showPassword ? 'text' : 'password'}
+                          placeholder="********"
+                          className="h-12 rounded-xl bg-muted/50 border-transparent focus-visible:border-primary focus-visible:ring-primary/20 focus-visible:bg-background transition-all pr-10"
+                          {...field}
                         />
                         <Button
                           type="button"
@@ -153,10 +153,9 @@ export default function LoginPage() {
                   </FormItem>
                 )}
               />
-              
+
               {error && (
                 <div className="p-4 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-sm font-bold flex items-start gap-2">
-                  <div className="mt-0.5 shrink-0">⚠️</div>
                   <div>{error}</div>
                 </div>
               )}

@@ -34,10 +34,7 @@ export class AuthService {
       },
     });
 
-    const payload = { email: user.email, sub: user.id };
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
+    return this.generateTokens(user);
   }
 
   async login(dto: LoginDto) {
@@ -54,9 +51,42 @@ export class AuthService {
       throw new UnauthorizedException('Credenciales inválidas');
     }
 
+    return this.generateTokens(user);
+  }
+
+  async refreshTokens(refreshToken: string) {
+    try {
+      
+      const payload = this.jwtService.verify(refreshToken);
+      const user = await this.usuariosRepository.findById(payload.sub);
+
+      if (!user || !user.hashedRefreshToken || !user.activo) {
+        throw new UnauthorizedException('Token inválido');
+      }
+
+      
+      const isMatch = await bcrypt.compare(refreshToken, user.hashedRefreshToken);
+      if (!isMatch) {
+        throw new UnauthorizedException('Token inválido');
+      }
+
+      return this.generateTokens(user);
+    } catch {
+      throw new UnauthorizedException('Token inválido');
+    }
+  }
+
+  private async generateTokens(user: { id: string; email: string }) {
     const payload = { email: user.email, sub: user.id };
+    const access_token = this.jwtService.sign(payload, { expiresIn: '15m' });
+    const refresh_token = this.jwtService.sign(payload, { expiresIn: '7d' });
+
+    const hashedRefreshToken = await bcrypt.hash(refresh_token, 10);
+    await this.usuariosRepository.updateRefreshToken(user.id, hashedRefreshToken);
+
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token,
+      refresh_token,
     };
   }
 }

@@ -8,5 +8,6 @@ export class UsuarioEntity {
     public readonly createdAt?: Date,
     public readonly updatedAt?: Date,
     public readonly deletedAt?: Date | null,
+    public readonly hashedRefreshToken?: string | null,
   ) {}
 }
