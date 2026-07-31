@@ -39,8 +39,9 @@ export default function AddUser() {
     try {
       await api.post('/auth/register', data);
       navigate('/login');
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Error al registrar el usuario. Verifica tus datos.');
+    } catch (err: any) {
+      const msg = err.response?.data?.message || err.message || 'Error al registrar el usuario. Verifica tus datos.';
+      setError(Array.isArray(msg) ? msg.join(', ') : msg);
     } finally {
       setIsLoading(false);
     }
