@@ -3,6 +3,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 
+import { ThemeToggle } from '@/components/theme-toggle';
+
 interface HeaderProps {
   backUrl?: string;
   backLabel?: string;
@@ -33,6 +35,7 @@ export function Header({ backUrl, backLabel }: HeaderProps = {}) {
         </div>
         
         <div className="flex items-center gap-4">
+          <ThemeToggle />
           {user ? (
             <>
               <span className="text-sm font-medium text-muted-foreground hidden sm:inline-block bg-muted/50 px-3 py-1.5 rounded-full border border-border/50">

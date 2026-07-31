@@ -25,6 +25,7 @@ Está dividido en dos partes principales:
   - **Validación Estricta:** Uso de `ValidationPipe` (con whitelist) para evitar ataques de *Mass Assignment*.
 - **Base de Datos:** **PostgreSQL** orquestado a través del ORM **Prisma**.
 - **Linting & Calidad:** Configuración estricta de ESLint y TypeScript sin vulnerabilidades (`pnpm audit` en verde).
+- **CI/CD (GitHub Actions):** Flujo de integración continua configurado en `.github/workflows/ci.yml` para ejecutar automáticamente los tests y linters del frontend y backend en cada push.
 
 ---
 
