@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Loader2, ArrowLeft } from 'lucide-react';
+import { toast } from 'sonner';
 
 const inmuebleSchema = z.object({
   direccion: z.string().min(5, 'La dirección es muy corta'),
@@ -68,9 +69,12 @@ export default function EditInmueble() {
     try {
       setError(null);
       await api.patch(`/inmuebles/${id}`, data);
+      toast.success('Inmueble actualizado correctamente');
       navigate(`/inmuebles/${id}`);
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Error al actualizar el inmueble');
+    } catch (err: any) {
+      const msg = err.response?.data?.message || err.message || 'Error al actualizar el inmueble';
+      setError(msg);
+      toast.error(`No se pudo guardar: ${msg}`);
     }
   };
 

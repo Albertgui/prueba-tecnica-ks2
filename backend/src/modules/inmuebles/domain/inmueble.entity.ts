@@ -13,6 +13,8 @@ export class InmuebleEntity {
     public readonly tipoInmuebleId: string,
     public readonly createdAt?: Date,
     public readonly updatedAt?: Date,
+    public readonly vendedor?: any,
+    public readonly tipoInmueble?: any,
   ) {}
 
   get estado(): EstadoInmueble {
@@ -21,38 +23,31 @@ export class InmuebleEntity {
 
   cambiarEstado(nuevoEstado: EstadoInmueble): void {
     if (this._estado === EstadoInmueble.VENDIDO) {
-      throw new ConflictException(
-        'Un inmueble vendido no puede cambiar de estado.',
-      );
+      throw new ConflictException('Un inmueble vendido no puede cambiar de estado.');
     }
 
-    if (
-      nuevoEstado === EstadoInmueble.RESERVADO &&
-      this._estado !== EstadoInmueble.DISPONIBLE
-    ) {
-      throw new ConflictException(
-        'Solo se pueden reservar inmuebles disponibles.',
-      );
-    }
-
-    if (
-      nuevoEstado === EstadoInmueble.VENDIDO &&
-      this._estado !== EstadoInmueble.DISPONIBLE
-    ) {
-      throw new ConflictException(
-        'Solo se pueden vender inmuebles disponibles.',
-      );
-    }
-
-    if (
-      nuevoEstado === EstadoInmueble.DISPONIBLE &&
-      this._estado !== EstadoInmueble.RESERVADO
-    ) {
-      throw new ConflictException(
-        'Solo se pueden liberar (hacer disponibles) inmuebles reservados.',
-      );
+    if (nuevoEstado === EstadoInmueble.RESERVADO) {
+      if (this._estado !== EstadoInmueble.DISPONIBLE) {
+        throw new ConflictException('Solo se pueden reservar inmuebles disponibles.');
+      }
+    } else if (nuevoEstado === EstadoInmueble.VENDIDO) {
+      if (this._estado !== EstadoInmueble.RESERVADO) {
+        throw new ConflictException('El inmueble debe estar reservado antes de marcarse como vendido.');
+      }
+    } else if (nuevoEstado === EstadoInmueble.DISPONIBLE) {
+      if (this._estado !== EstadoInmueble.RESERVADO) {
+        throw new ConflictException('Solo se pueden liberar (hacer disponibles) inmuebles reservados.');
+      }
     }
 
     this._estado = nuevoEstado;
+  }
+
+  toJSON() {
+    const { _estado, ...rest } = this as any;
+    return {
+      ...rest,
+      estado: this.estado,
+    };
   }
 }

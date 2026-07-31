@@ -30,6 +30,10 @@ export class InmueblesRepository {
   async findById(id: string): Promise<InmuebleEntity | null> {
     const record = await this.prisma.inmueble.findUnique({
       where: { id, deletedAt: null },
+      include: {
+        tipoInmueble: true,
+        vendedor: { select: { id: true, nombre: true, email: true } },
+      }
     });
     return record ? this.mapToEntity(record) : null;
   }
@@ -45,7 +49,9 @@ export class InmueblesRepository {
     const where: Prisma.InmuebleWhereInput = { deletedAt: null };
 
     if (filters.estado) where.estado = filters.estado;
-    if (filters.habitaciones) where.habitaciones = filters.habitaciones;
+    if (filters.habitaciones !== undefined) {
+      where.habitaciones = { gte: filters.habitaciones };
+    }
     if (filters.tipoInmuebleId) where.tipoInmuebleId = filters.tipoInmuebleId;
 
     if (filters.precioMin || filters.precioMax) {
@@ -120,8 +126,8 @@ export class InmueblesRepository {
     });
   }
 
-  private mapToEntity(
-    record: Prisma.InmuebleGetPayload<Record<string, never>>,
+    private mapToEntity(
+    record: Prisma.InmuebleGetPayload<Record<string, never>> | any,
   ): InmuebleEntity {
     return new InmuebleEntity(
       record.id,
@@ -134,6 +140,8 @@ export class InmueblesRepository {
       record.tipoInmuebleId,
       record.createdAt,
       record.updatedAt,
+      record.vendedor,
+      record.tipoInmueble
     );
   }
 }

@@ -7,13 +7,25 @@ import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { MapPin, Bed, Maximize, User, ArrowLeft, Edit, Trash2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function InmuebleDetalle() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user: currentUser } = useAuth();
-  
+
   const { data: inmueble, error, isLoading, mutate } = useSWR<Inmueble>(
     `/inmuebles/${id}`,
     fetcher
@@ -39,28 +51,26 @@ export default function InmuebleDetalle() {
       setIsChangingState(true);
       await api.patch(`/inmuebles/${id}/estado`, { estado: nuevoEstado });
       mutate();
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        alert(error.message || 'Error al cambiar estado');
-      } else {
-        alert('Error al cambiar estado');
-      }
+      toast.success(`Estado actualizado a ${nuevoEstado}`);
+    } catch (error: any) {
+      const backendMessage = error.response?.data?.message || error.message || 'Error al cambiar estado';
+      toast.error(`No se pudo cambiar el estado: ${backendMessage}`);
     } finally {
       setIsChangingState(false);
     }
   };
 
   const handleDelete = async () => {
-    if (!confirm('¿Estás seguro de eliminar este inmueble?')) return;
     try {
       setIsDeleting(true);
       await api.delete(`/inmuebles/${id}`);
+      toast.success('Inmueble eliminado correctamente');
       navigate('/inmuebles');
     } catch (error: unknown) {
       if (error instanceof Error) {
-        alert(error.message || 'Error al eliminar');
+        toast.error(error.message || 'Error al eliminar');
       } else {
-        alert('Error al eliminar');
+        toast.error('Error al eliminar');
       }
       setIsDeleting(false);
     }
@@ -100,7 +110,7 @@ export default function InmuebleDetalle() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 max-w-5xl">
+      <main className="container mx-auto px-4 max-w-4xl">
         <div className="bg-card rounded-xl border shadow-sm overflow-hidden">
 
           <div className="h-64 sm:h-96 bg-muted relative flex items-center justify-center border-b">
@@ -113,8 +123,8 @@ export default function InmuebleDetalle() {
           </div>
 
           <div className="p-6 sm:p-10">
-            <div className="flex flex-col md:flex-row justify-between gap-8">
-              <div className="flex-1">
+            <div className="space-y-12">
+              <div>
                 <div className="flex items-center gap-2 mb-4">
                   <Badge variant="outline" className="uppercase tracking-wider">
                     {inmueble.tipoInmueble?.nombre || 'Inmueble'}
@@ -123,17 +133,17 @@ export default function InmuebleDetalle() {
                     Publicado el {new Date(inmueble.createdAt).toLocaleDateString()}
                   </span>
                 </div>
-                
+
                 <h1 className="text-4xl font-bold mb-4 tracking-tight">
                   ${inmueble.precio.toLocaleString()}
                 </h1>
-                
+
                 <div className="flex items-center text-lg text-muted-foreground mb-8">
                   <MapPin className="w-5 h-5 mr-2 shrink-0" />
                   <span>{inmueble.direccion}</span>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 max-w-sm mb-12">
+                <div className="grid grid-cols-2 gap-4 max-w-md mb-12">
                   <div className="flex items-center p-4 bg-muted/50 rounded-lg">
                     <Bed className="w-6 h-6 mr-3 text-primary" />
                     <div>
@@ -165,38 +175,54 @@ export default function InmuebleDetalle() {
                 </div>
               </div>
 
-
               {isOwner && (
-                <div className="w-full md:w-80 space-y-6">
-                  <div className="p-6 bg-muted/30 rounded-xl border">
-                    <h3 className="font-semibold text-lg mb-4">Gestionar Inmueble</h3>
-                    
+                <div className="pt-4 border-t">
+                  <div className="mt-4 sm:p-8 bg-muted/30 rounded-xl border">
+                    <h3 className="font-semibold text-xl mb-6">Gestionar Inmueble</h3>
+
                     {!isVendido ? (
-                      <>
-                        <div className="space-y-3 mb-6">
-                          <Button 
-                            className="w-full" 
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="space-y-3">
+                          <p className="text-sm font-medium text-muted-foreground mb-3">Acciones Generales</p>
+                          <Button
+                            className="w-full"
                             variant="outline"
                             onClick={() => navigate(`/inmuebles/${inmueble.id}/editar`)}
                           >
                             <Edit className="w-4 h-4 mr-2" /> Editar Detalles
                           </Button>
-                          <Button 
-                            className="w-full text-destructive hover:bg-destructive/10" 
-                            variant="ghost"
-                            onClick={handleDelete}
-                            disabled={isDeleting}
-                          >
-                            <Trash2 className="w-4 h-4 mr-2" /> Eliminar Inmueble
-                          </Button>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button 
+                                className="w-full text-destructive hover:bg-destructive/10 border-destructive/20" 
+                                variant="outline"
+                                disabled={isDeleting}
+                              >
+                                <Trash2 className="w-4 h-4 mr-2" /> Eliminar Inmueble
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  Esta acción no se puede deshacer. Esto eliminará permanentemente la publicación del inmueble.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                <AlertDialogAction onClick={handleDelete} className="bg-destructive hover:bg-destructive/90 text-destructive-foreground">
+                                  Eliminar Inmueble
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
                         </div>
 
-                        <div className="border-t pt-4">
-                          <p className="text-sm font-medium mb-3">Cambiar Estado:</p>
-                          <div className="space-y-2">
+                        <div className="space-y-3">
+                          <p className="text-sm font-medium text-muted-foreground mb-3">Estado del Inmueble</p>
+                          <div className="grid grid-cols-1 gap-3">
                             {inmueble.estado === 'DISPONIBLE' && (
-                              <Button 
-                                size="sm" 
+                              <Button
                                 className="w-full bg-yellow-500 hover:bg-yellow-600 text-white"
                                 onClick={() => handleEstadoChange('RESERVADO')}
                                 disabled={isChangingState}
@@ -206,34 +232,47 @@ export default function InmuebleDetalle() {
                             )}
                             {inmueble.estado === 'RESERVADO' && (
                               <Button 
-                                size="sm" 
                                 variant="outline" 
-                                className="w-full"
+                                className="w-full border-yellow-500/50 text-yellow-600 hover:bg-yellow-50"
                                 onClick={() => handleEstadoChange('DISPONIBLE')}
                                 disabled={isChangingState}
                               >
                                 Liberar (Hacer Disponible)
                               </Button>
                             )}
-                            <Button 
-                              size="sm" 
-                              className="w-full bg-slate-800 hover:bg-slate-900 text-white"
-                              onClick={() => {
-                                if (confirm('¿Marcar como vendido? Esta acción es irreversible.')) {
-                                  handleEstadoChange('VENDIDO');
-                                }
-                              }}
-                              disabled={isChangingState}
-                            >
-                              Marcar como Vendido
-                            </Button>
+                            {inmueble.estado === 'RESERVADO' && (
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button
+                                    className="w-full bg-slate-800 hover:bg-slate-900 text-white"
+                                    disabled={isChangingState}
+                                  >
+                                    Marcar como Vendido
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>¿Marcar como vendido?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      Esta acción ocultará el inmueble y no podrá ser revertida ni el inmueble podrá ser editado posteriormente.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                    <AlertDialogAction onClick={() => handleEstadoChange('VENDIDO')}>
+                                      Confirmar Venta
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
+                            )}
                           </div>
                         </div>
-                      </>
+                      </div>
                     ) : (
-                      <div className="text-center p-4 bg-green-500/10 text-green-700 rounded-lg border border-green-200">
-                        <p className="font-medium">Inmueble Vendido</p>
-                        <p className="text-sm mt-1">Este inmueble ya no puede ser editado ni eliminado.</p>
+                      <div className="text-center p-6 bg-green-500/10 text-green-700 rounded-lg border border-green-200">
+                        <p className="font-medium text-lg">Inmueble Vendido</p>
+                        <p className="text-green-700/80 mt-1">Este inmueble ya no puede ser editado ni eliminado.</p>
                       </div>
                     )}
                   </div>

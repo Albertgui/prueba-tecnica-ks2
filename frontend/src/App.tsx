@@ -2,6 +2,7 @@ import { Suspense, lazy } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from '@/context/AuthContext';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
+import { Toaster } from '@/components/ui/sonner';
 
 const AddInmueble = lazy(() => import('@/pages/AddInmueble'));
 const EditInmueble = lazy(() => import('@/pages/EditInmueble'));
@@ -31,6 +32,7 @@ function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>
+      <Toaster position="top-center" richColors />
     </AuthProvider>
   );
 }

@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Loader2, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { toast } from 'sonner';
 
 const inmuebleSchema = z.object({
   direccion: z.string().min(5, 'La dirección es muy corta'),
@@ -39,9 +40,12 @@ export default function AddInmueble() {
     try {
       setError(null);
       await api.post('/inmuebles', data);
+      toast.success('Inmueble publicado con éxito');
       navigate('/inmuebles');
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Error al crear el inmueble');
+    } catch (err: any) {
+      const msg = err.response?.data?.message || err.message || 'Error al crear el inmueble';
+      setError(msg);
+      toast.error(`No se pudo publicar: ${msg}`);
     }
   };
 

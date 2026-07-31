@@ -7,6 +7,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Slider } from '@/components/ui/slider';
 import { useAuth } from '@/hooks/useAuth';
 import { Search, SlidersHorizontal } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -17,7 +18,12 @@ export default function InmuebleList() {
   const [estadoFilter, setEstadoFilter] = useState<string>('ALL');
   const [soloMios, setSoloMios] = useState(false);
   const [search, setSearch] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [debouncedFilters, setDebouncedFilters] = useState({
+    search: '',
+    precioMin: '',
+    precioMax: '',
+    habitaciones: ''
+  });
   const [tipoFilter, setTipoFilter] = useState<string>('ALL');
   const [precioMin, setPrecioMin] = useState<string>('');
   const [precioMax, setPrecioMax] = useState<string>('');
@@ -25,9 +31,11 @@ export default function InmuebleList() {
   const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setDebouncedSearch(search), 500);
+    const timer = setTimeout(() => {
+      setDebouncedFilters({ search, precioMin, precioMax, habitaciones });
+    }, 300);
     return () => clearTimeout(timer);
-  }, [search]);
+  }, [search, precioMin, precioMax, habitaciones]);
 
   const { data: tipos } = useSWR<{ id: string, nombre: string }[]>('/tipos-inmueble', fetcher);
 
@@ -35,11 +43,11 @@ export default function InmuebleList() {
     let base = `/inmuebles?page=${page}&limit=12`;
     if (estadoFilter !== 'ALL') base += `&estado=${estadoFilter}`;
     if (soloMios) base += `&soloMios=true`;
-    if (debouncedSearch) base += `&search=${encodeURIComponent(debouncedSearch)}`;
+    if (debouncedFilters.search) base += `&search=${encodeURIComponent(debouncedFilters.search)}`;
     if (tipoFilter !== 'ALL') base += `&tipoInmuebleId=${tipoFilter}`;
-    if (precioMin) base += `&precioMin=${precioMin}`;
-    if (precioMax) base += `&precioMax=${precioMax}`;
-    if (habitaciones) base += `&habitaciones=${habitaciones}`;
+    if (debouncedFilters.precioMin) base += `&precioMin=${debouncedFilters.precioMin}`;
+    if (debouncedFilters.precioMax) base += `&precioMax=${debouncedFilters.precioMax}`;
+    if (debouncedFilters.habitaciones) base += `&habitaciones=${debouncedFilters.habitaciones}`;
     return base;
   })();
 
@@ -47,6 +55,12 @@ export default function InmuebleList() {
     endpoint,
     fetcher
   );
+
+  const isPending = isLoading ||
+    search !== debouncedFilters.search ||
+    precioMin !== debouncedFilters.precioMin ||
+    precioMax !== debouncedFilters.precioMax ||
+    habitaciones !== debouncedFilters.habitaciones;
 
   return (
     <div className="min-h-screen bg-background selection:bg-primary/20 selection:text-primary">
@@ -146,7 +160,7 @@ export default function InmuebleList() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-xs font-medium text-muted-foreground">Rango de Precio</label>
+              <label className="text-xs font-medium text-muted-foreground">Rango de Precio $</label>
               <div className="flex items-center gap-2">
                 <Input
                   type="number"
@@ -164,19 +178,28 @@ export default function InmuebleList() {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <label className="text-xs font-medium text-muted-foreground">Habitaciones (Exacto)</label>
-              <Input
-                type="number"
-                placeholder="Ej. 3"
-                value={habitaciones}
-                onChange={(e) => { setHabitaciones(e.target.value); setPage(1); }}
-              />
+            <div className="space-y-2 flex flex-col justify-center">
+              <div className="flex justify-between items-center mb-1">
+                <label className="text-xs font-medium text-muted-foreground">Habitaciones</label>
+                <span className="text-xs font-bold text-primary">{habitaciones ? `${habitaciones}+` : 'Cualquiera'}</span>
+              </div>
+              <div className="pt-2">
+                <Slider
+                  defaultValue={[0]}
+                  max={8}
+                  step={1}
+                  value={[parseInt(habitaciones || '0')]}
+                  onValueChange={(value) => { 
+                    setHabitaciones(value[0] === 0 ? '' : value[0].toString()); 
+                    setPage(1); 
+                  }}
+                />
+              </div>
             </div>
           </div>
         )}
 
-        {isLoading && (
+        {isPending && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {[...Array(8)].map((_, i) => (
               <div key={i} className="flex flex-col space-y-3">
@@ -200,7 +223,7 @@ export default function InmuebleList() {
           </div>
         )}
 
-        {data && data.data.length === 0 && (
+        {data && data.data.length === 0 && !isPending && (
           <div className="p-12 text-center bg-muted/30 rounded-lg border border-dashed">
             <span className="text-5xl mb-4 block">🏡</span>
             <h3 className="text-xl font-semibold mb-2">No se encontraron inmuebles</h3>
@@ -210,7 +233,7 @@ export default function InmuebleList() {
           </div>
         )}
 
-        {data && data.data.length > 0 && (
+        {data && data.data.length > 0 && !isPending && (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {data.data.map((inmueble) => (
