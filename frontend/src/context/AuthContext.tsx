@@ -1,6 +1,7 @@
-import React, { createContext, useState, useEffect, ReactNode } from 'react';
-import { api } from '@/services/api';
-import { Usuario } from '@/types';
+import { createContext, useState, useEffect } from 'react';
+import type { ReactNode } from 'react';
+import { api } from '../services/api';
+import type { Usuario } from '../types';
 
 interface AuthContextType {
   user: Usuario | null;
@@ -10,6 +11,7 @@ interface AuthContextType {
   logout: () => void;
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -26,7 +28,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           const { data } = await api.get<Usuario>('/auth/me');
           setToken(storedToken);
           setUser(data);
-        } catch (error) {
+        } catch {
           localStorage.removeItem('token');
         }
       }

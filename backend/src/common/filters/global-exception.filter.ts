@@ -10,6 +10,8 @@ import { Request, Response } from 'express';
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost) {
+    console.error('🔥 EXCEPTION EN EL BACKEND:', exception);
+    require('fs').appendFileSync('error.log', String(exception) + '\n' + (exception as any).stack + '\n');
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();

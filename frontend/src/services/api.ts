@@ -21,3 +21,5 @@ api.interceptors.request.use(
     return Promise.reject(error);
   }
 );
+
+export const fetcher = (url: string) => api.get(url).then((res) => res.data);
